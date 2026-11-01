@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agihan Kursus DAT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;600;700;800&display=swap">
+
+<style id="app-css">/* Arah reka bentuk: tema cerah lembut daripada logo UTHM (biru tua) dan JTM (merah-jingga-kuning, kelabu); latar beranimasi perlahan */
+:root{
+  --navy:#2e3192; --indigo:#4a4fc4; --orange:#f58220; --red:#ee3124; --amber:#fbb040; --grey:#7a7d80;
+  --bg:#f4f3fb; --panel:rgba(255,255,255,.80); --panel-solid:#ffffff; --panel2:rgba(244,243,252,.85); --ink:#1d2152; --muted:#5f6590; --line:rgba(46,49,146,.14);
+  --accent:#3a3fb8; --accent-ink:#ffffff; --accent2:#f58220;
+  --good:#0f8a58; --warn:#b26a00; --bad:#d62c3a; --info:#2a6fd1; --sam:#14935f; --sam-soft:#d9f3e7;
+  --shadow:0 1px 2px rgba(46,49,146,.06),0 12px 32px rgba(46,49,146,.09);
+  --cs:64%; --cl:87%; --ctext:#1d2152; --cell-empty:rgba(46,49,146,.06);
+  --font-body:"Figtree","Segoe UI",system-ui,-apple-system,sans-serif; --font-display:"Bricolage Grotesque","Figtree",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:14px;line-height:1.45}
+body{min-height:100%}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,h3{font-family:var(--font-display);margin:0;text-wrap:balance}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1500px;margin:0 auto;padding:16px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* kepala */
+.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;padding:6px 0 14px}
+.brand h1{font-size:26px;letter-spacing:-.02em}
+.brand p{margin:2px 0 0;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:7px 12px;display:inline-flex;gap:6px;align-items:center;box-shadow:var(--shadow)}
+.btn:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.btn.ghost{box-shadow:none;background:transparent}
+.chip-state{padding:5px 10px;border-radius:999px;font-weight:600;font-size:12px;border:1px solid var(--line);background:var(--panel2);color:var(--muted)}
+.chip-state.dirty{color:var(--warn);border-color:var(--warn)}
+.chip-state.ok{color:var(--good);border-color:var(--good)}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--k,var(--accent))}
+.kpi .l{color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.kpi .v{font-family:var(--font-display);font-size:34px;font-weight:700;line-height:1.1;margin-top:2px}
+.kpi .s{color:var(--muted);font-size:12px;margin-top:2px}
+.kpi.bad{--k:var(--bad)} .kpi.warn{--k:var(--warn)} .kpi.good{--k:var(--good)}
+.split{display:flex;height:8px;border-radius:99px;overflow:hidden;margin-top:8px;background:var(--cell-empty)}
+.split i{display:block;height:100%}
+
+/* tab */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:14px;flex-wrap:wrap}
+.tab{border:0;background:transparent;padding:9px 14px;border-bottom:3px solid transparent;color:var(--muted);font-weight:700;display:flex;gap:7px;align-items:center}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.badge{min-width:20px;padding:0 6px;border-radius:99px;font-size:11px;font-weight:800;text-align:center;line-height:18px;background:var(--cell-empty);color:var(--muted)}
+.badge.bad{background:var(--bad);color:#fff} .badge.warn{background:var(--warn);color:#fff}
+
+/* susun atur agihan */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px;align-items:start}
+@media (max-width:1050px){.layout{grid-template-columns:1fr}}
+.courses{display:flex;flex-direction:column;gap:14px;min-width:0}
+.course{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.course.flash{animation:flash 1.4s ease}
+@keyframes flash{0%,60%{box-shadow:0 0 0 3px var(--accent)}100%{box-shadow:var(--shadow)}}
+.ch{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:10px 14px;background:linear-gradient(90deg,var(--panel2),var(--panel));border-bottom:1px solid var(--line)}
+.ch .cid{font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+.ch h3{font-size:17px;flex:1 1 220px}
+.ch .meta{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:12.5px}
+.ch select,.set select,.set input,.tbl input,.search{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:4px 8px}
+.ch label{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:12.5px}
+.pill{border-radius:99px;padding:2px 9px;font-size:11.5px;font-weight:700;border:1px solid var(--line);background:var(--panel2);color:var(--muted);white-space:nowrap}
+.pill.good{color:var(--good);border-color:var(--good)} .pill.bad{color:var(--bad);border-color:var(--bad)} .pill.warn{color:var(--warn);border-color:var(--warn)}
+.gridwrap{overflow-x:auto;padding:12px 14px 14px}
+.grid{display:grid;grid-template-columns:70px repeat(var(--n),minmax(72px,1fr));gap:4px;min-width:calc(70px + var(--n)*76px)}
+.rl{align-self:center;font-size:11.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.sec{text-align:center;font-weight:800;color:var(--muted);font-size:12px}
+.stu{text-align:center;color:var(--muted);font-size:12px}
+.cell{position:relative;min-height:44px;border-radius:9px;padding:5px 6px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;font-size:12.5px;line-height:1.2;
+  border:1.5px solid transparent;user-select:none;touch-action:none;transition:transform .08s,filter .12s;word-break:break-word}
+.cell.lc{background:hsl(var(--h) var(--cs) var(--cl));color:var(--ctext)}
+.cell.empty{background:var(--cell-empty);color:var(--muted);border:1.5px dashed var(--line);font-weight:600}
+.cell.k{min-height:50px}
+.cell:hover{filter:brightness(1.06);border-color:var(--accent)}
+.cell.ex{border-color:var(--warn);box-shadow:inset 0 0 0 1px var(--warn)}
+.cell.dim{opacity:.28}
+.cell.jsm{background:#cfe2f7;color:#14325e;cursor:default}
+.cell .cp{position:absolute;right:3px;top:2px;border:0;background:rgba(255,255,255,.35);color:inherit;border-radius:6px;font-size:10px;padding:0 4px;line-height:15px;opacity:0;transition:opacity .1s}
+.cell:hover .cp,.cell .cp:focus-visible{opacity:1}
+body.painting .cell:not(.jsm){cursor:crosshair}
+.hint{color:var(--muted);font-size:12px;padding:0 14px 12px}
+
+/* bar sisi */
+.side{position:sticky;top:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);max-height:calc(100vh - 20px);display:flex;flex-direction:column;min-width:0}
+@media (max-width:1050px){.side{position:static;max-height:none}}
+.sh{padding:12px 12px 8px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.sh h2{font-size:16px}
+.search{width:100%}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:var(--panel2);border-radius:99px;padding:2px 10px;font-size:12px;font-weight:700;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.brushinfo{font-size:12.5px;padding:7px 9px;border-radius:9px;background:var(--panel2);border:1px dashed var(--line);color:var(--muted)}
+.brushinfo b{color:var(--ink)}
+.list{overflow-y:auto;padding:6px;display:flex;flex-direction:column;gap:4px}
+.lrow{display:grid;grid-template-columns:14px 1fr auto;gap:2px 8px;align-items:center;padding:7px 8px;border-radius:10px;border:1.5px solid transparent;cursor:pointer;background:transparent;text-align:left;width:100%}
+.lrow:hover{background:var(--panel2)}
+.lrow[aria-pressed="true"]{border-color:var(--accent);background:var(--panel2)}
+.dot{width:12px;height:12px;border-radius:4px;background:hsl(var(--h) var(--cs) var(--cl));border:1px solid rgba(0,0,0,.18)}
+.dot.era{background:transparent;border:1.5px dashed var(--muted)}
+.lname{font-weight:700;display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.lsub{grid-column:2;color:var(--muted);font-size:11.5px}
+.lh{grid-row:1;grid-column:3;font-weight:800;text-align:right}
+.lh small{color:var(--muted);font-weight:600}
+.lh.bad{color:var(--bad)} .lh.good{color:var(--good)} .lh.warn{color:var(--warn)}
+.bar{grid-column:1/-1;position:relative;height:6px;background:var(--cell-empty);border-radius:99px;margin-top:3px}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--accent2)}
+.bar.bad i{background:var(--bad)} .bar.good i{background:var(--good)} .bar.warn i{background:var(--warn)}
+.bar u{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.7;border-radius:2px;text-decoration:none}
+.tag{font-size:10.5px;font-weight:800;border-radius:6px;padding:0 5px;background:var(--cell-empty);color:var(--muted);line-height:16px}
+.tag.star{background:var(--accent);color:var(--accent-ink)}
+.tag.s1{background:transparent;border:1px solid var(--line)}
+.tag.warn{color:var(--warn);border:1px solid var(--warn);background:transparent}
+
+/* popover */
+.pop{position:fixed;z-index:50;width:290px;max-height:min(420px,70vh);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.35);padding:6px}
+.pop h4{margin:6px 8px 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.pop button{display:flex;width:100%;gap:8px;align-items:center;border:0;background:transparent;padding:6px 8px;border-radius:8px;text-align:left}
+.pop button:hover{background:var(--panel2)}
+.pop .sub{margin-left:auto;color:var(--muted);font-size:11.5px;white-space:nowrap}
+.pop .x{color:var(--warn)}
+
+/* jadual */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px;margin-bottom:14px;min-width:0}
+.card h2{font-size:18px;margin-bottom:8px}
+.tw{overflow-x:auto}
+table.tbl{border-collapse:collapse;width:100%;min-width:760px}
+.tbl th,.tbl td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.tbl th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);cursor:pointer;white-space:nowrap}
+.tbl td.n,.tbl th.n{text-align:right}
+.tbl tr:hover td{background:var(--panel2)}
+.tbl input[type=number]{width:70px}
+.cbar{display:flex;height:14px;border-radius:5px;overflow:hidden;background:var(--cell-empty);position:relative;min-width:160px}
+.cbar i{display:block;height:100%}
+.cbar .kk{background:var(--accent)} .cbar .aa{background:var(--accent2)}
+.cbar u{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink);text-decoration:none}
+.legend{display:flex;gap:14px;color:var(--muted);font-size:12px;margin:6px 0 10px;flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+
+/* semakan */
+.issue{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border-radius:10px;border:1px solid var(--line);margin-bottom:6px;background:var(--panel2)}
+.issue .ic{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-weight:900;color:#fff;flex:none}
+.issue.bad .ic{background:var(--bad)} .issue.warn .ic{background:var(--warn)} .issue.info .ic{background:var(--info)} .issue.ok .ic{background:var(--good)}
+.issue .go{margin-left:auto}
+.set{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.set label{display:flex;flex-direction:column;gap:4px;color:var(--muted);font-size:12.5px;font-weight:600}
+.pairs{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.pairs .pill button{border:0;background:transparent;color:inherit;font-weight:900;margin-left:4px}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:10px;z-index:80;max-width:90vw;box-shadow:0 8px 30px rgba(0,0,0,.35);font-weight:600}
+.banner{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--panel);border:1px solid var(--warn);color:var(--ink);border-radius:12px;padding:9px 12px;margin-bottom:12px}
+.muted{color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+details.menu{position:relative}
+details.menu summary{list-style:none}
+details.menu summary::-webkit-details-marker{display:none}
+details.addc>summary{list-style:none}
+details.addc>summary::-webkit-details-marker{display:none}
+details.addc:not([open])>summary::after{content:"Buka";margin-left:auto;color:var(--accent);font-weight:700}
+details.addc[open]>summary::after{content:"Tutup";margin-left:auto;color:var(--accent);font-weight:700}
+
+.sin{width:100%;max-width:74px;text-align:center;background:transparent;border:1px solid transparent;border-radius:6px;padding:2px 2px;color:var(--muted);font-size:12px}
+.sin:hover,.sin:focus{border-color:var(--accent);background:var(--panel)}
+.sin::-webkit-inner-spin-button,.sin::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.sin{-moz-appearance:textfield;appearance:textfield}
+
+.shell{display:grid;grid-template-columns:216px minmax(0,1fr);min-height:100vh}
+.nav{position:sticky;top:0;align-self:start;height:100vh;padding:16px 10px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.nbrand{display:flex;flex-direction:column;padding:2px 10px 14px}
+.nbrand b{font-family:var(--font-display);font-size:19px;letter-spacing:-.01em}
+.nbrand small{color:var(--muted)}
+.ni{display:flex;gap:10px;align-items:center;padding:9px 10px;border:0;background:transparent;border-radius:10px;color:var(--muted);font-weight:700;text-align:left;width:100%}
+.ni:hover{background:var(--panel2);color:var(--ink)}
+.ni svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ni[aria-current="page"]{background:var(--panel2);color:var(--ink);box-shadow:inset 3px 0 0 var(--accent)}
+.ni .badge{margin-left:auto}
+.nfoot{margin-top:auto;padding:10px;color:var(--muted);font-size:12px}
+.main{padding:16px 18px;min-width:0}
+.pbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.pbar .bt{flex:1 1 260px}
+.pbar h1{font-size:25px;letter-spacing:-.02em}
+.pbar p{margin:2px 0 0;color:var(--muted)}
+.mini{display:flex;gap:6px}
+.mini .pill b{color:var(--ink)}
+.cfbar{display:flex;flex-wrap:wrap;gap:8px 12px;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:1100px){.two{grid-template-columns:1fr}}
+.hrow{display:grid;grid-template-columns:minmax(110px,150px) minmax(0,1fr) 68px;gap:8px;align-items:center;padding:3px 0}
+.hrow .bar{margin:0;grid-column:auto}
+.hn{font-weight:700;font-size:13px}
+.hv{text-align:right;font-size:12.5px;color:var(--muted)}
+.hv.bad{color:var(--bad)} .hv.good{color:var(--good)} .hv.warn{color:var(--warn)}
+.hv b{color:inherit}
+@media (max-width:860px){
+  .shell{grid-template-columns:1fr}
+  .nav{position:static;height:auto;flex-direction:row;overflow-x:auto;padding:8px;border-right:0;border-bottom:1px solid var(--line)}
+  .nbrand,.nfoot{display:none}
+  .ni span:not(.badge){white-space:nowrap}
+  .main{padding:12px}
+}
+
+
+/* ===== tema lembut, animasi, sambilan ===== */
+html,body{background:var(--bg)}
+#root{position:relative;z-index:1}
+.bgfx{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:linear-gradient(135deg,#f3f2fb 0%,#fbf5ef 55%,#f4f2fb 100%)}
+.bgfx i{position:absolute;border-radius:50%;filter:blur(72px);opacity:.6}
+.bgfx .b1{width:560px;height:560px;left:-140px;top:-100px;background:#c6caf6;animation:fl1 28s ease-in-out infinite alternate}
+.bgfx .b2{width:500px;height:500px;right:-120px;top:10%;background:#ffd8b6;animation:fl2 32s ease-in-out infinite alternate}
+.bgfx .b3{width:460px;height:460px;left:34%;bottom:-170px;background:#ffc6c0;animation:fl3 36s ease-in-out infinite alternate}
+@keyframes fl1{to{transform:translate(180px,140px) scale(1.18)}}
+@keyframes fl2{to{transform:translate(-160px,120px) scale(.9)}}
+@keyframes fl3{to{transform:translate(-200px,-90px) scale(1.2)}}
+select,input:not([type=checkbox]):not([type=file]){background:var(--panel-solid)}
+.pop{background:var(--panel-solid)}
+.card,.course,.kpi,.side,.nav,.btn{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.nav{background:rgba(255,255,255,.66)}
+.btn.primary{background:linear-gradient(120deg,#2e3192,#4a4fc4);border-color:transparent;color:#fff;box-shadow:0 6px 18px rgba(46,49,146,.28)}
+.btn.primary:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px)}
+.btn{transition:transform .12s,box-shadow .15s,border-color .15s}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.ch{background:linear-gradient(90deg,rgba(46,49,146,.07),rgba(245,130,32,.07))}
+.course,.card,.kpi{transition:box-shadow .2s,transform .2s}
+.course:hover,.card:hover{box-shadow:0 2px 4px rgba(46,49,146,.07),0 16px 38px rgba(46,49,146,.12)}
+.ni[aria-current="page"]{background:linear-gradient(90deg,rgba(46,49,146,.12),rgba(245,130,32,.10));box-shadow:inset 3px 0 0 var(--orange)}
+.ni{transition:background .15s,color .15s}
+.kpi::before{background:linear-gradient(180deg,var(--k,var(--indigo)),var(--orange))}
+.kpi .v{color:var(--navy)}
+.cell{transition:transform .1s,filter .12s,box-shadow .15s}
+.cell:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(46,49,146,.16)}
+.cell.lc.sam{background:repeating-linear-gradient(135deg,hsl(var(--h) var(--cs) var(--cl)) 0 8px,hsl(var(--h) var(--cs) calc(var(--cl) - 8%)) 8px 16px);border:1.5px dashed var(--sam)}
+.cell.sam::before{content:"S";position:absolute;left:3px;top:2px;font-size:9px;font-weight:900;line-height:14px;padding:0 5px;border-radius:5px;background:var(--sam);color:#fff}
+.tag.sambtag{background:var(--sam);color:#fff;letter-spacing:.04em}
+.tag.tetap{background:rgba(46,49,146,.09);color:var(--navy)}
+.lrow.sam{background:linear-gradient(90deg,rgba(20,147,95,.12),transparent 75%);border-left:3px solid var(--sam)}
+.lrow.sam[aria-pressed="true"]{border-color:var(--sam);border-left-width:3px}
+.lgrp{margin:8px 6px 2px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--navy);display:flex;gap:6px;align-items:center}
+.lgrp b{background:var(--cell-empty);border-radius:99px;padding:0 7px;line-height:17px}
+.lgrp.sam{color:var(--sam)} .lgrp.sam b{background:var(--sam-soft)}
+.hrow.sam .hn{color:var(--sam)}
+tr.sam td{background:rgba(20,147,95,.07)}
+.legend2{display:flex;flex-wrap:wrap;gap:6px 18px;color:var(--muted);font-size:12px;margin:-4px 0 12px}
+.legend2 .lg{display:inline-block;width:18px;height:11px;border-radius:4px;margin-right:6px;vertical-align:-1px}
+.lg.tetapi{background:hsl(250 64% 87%)}
+.lg.samb{background:repeating-linear-gradient(135deg,hsl(140 64% 87%) 0 4px,hsl(140 64% 79%) 4px 8px);border:1.5px dashed var(--sam)}
+.lg.exc{background:transparent;border:2px solid var(--warn)}
+.ring{position:absolute;right:12px;top:12px;width:46px;height:46px;transform:rotate(-90deg)}
+.ring .rb{fill:none;stroke:var(--cell-empty);stroke-width:5}
+.ring .rf{fill:none;stroke:var(--good);stroke-width:5;stroke-linecap:round;stroke-dasharray:calc(var(--p)*113.1) 113.1;animation:ringin 1.3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes ringin{from{stroke-dasharray:0 113.1}}
+.bar i{transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.bar.good i{background:linear-gradient(90deg,#34c28a,var(--good))}
+.bar i{background:linear-gradient(90deg,var(--amber),var(--orange))}
+.cbar .kk{background:linear-gradient(90deg,#6a6fe0,var(--indigo))} .cbar .aa{background:linear-gradient(90deg,var(--amber),var(--orange))}
+
+/* animasi masuk halaman */
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.enter .kpi,.enter .card,.enter .course,.enter .cfbar,.enter .legend2,.enter .side,.enter .issue{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.enter .kpis .kpi:nth-child(2){animation-delay:.06s}.enter .kpis .kpi:nth-child(3){animation-delay:.12s}.enter .kpis .kpi:nth-child(4){animation-delay:.18s}.enter .kpis .kpi:nth-child(5){animation-delay:.24s}
+.enter .two .card:nth-child(2){animation-delay:.1s}.enter .card:nth-last-child(1){animation-delay:.16s}
+.enter .courses .course:nth-child(1){animation-delay:.04s}.enter .courses .course:nth-child(2){animation-delay:.1s}.enter .courses .course:nth-child(3){animation-delay:.16s}.enter .courses .course:nth-child(4){animation-delay:.22s}.enter .courses .course:nth-child(n+5){animation-delay:.28s}
+.enter .bar i,.enter .cbar i,.enter .split i{transform-origin:left center;animation:grow 1s cubic-bezier(.2,.7,.2,1) both .2s}
+
+/* banner institusi: logo lutsinar di atas latar lembut */
+.bbanner{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:14px 24px;flex-wrap:wrap;margin-bottom:16px;padding:16px 24px 24px;border-radius:20px;border:1px solid var(--line);box-shadow:var(--shadow);background:linear-gradient(110deg,rgba(255,255,255,.9),rgba(255,248,242,.9) 55%,rgba(255,241,238,.9));background-size:200% 100%;animation:sheen 22s ease-in-out infinite alternate}
+@keyframes sheen{to{background-position:100% 0}}
+.bbanner::before,.bbanner::after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+.bbanner::before{width:420px;height:420px;right:-90px;top:-210px;background:radial-gradient(circle,rgba(245,130,32,.26),transparent 66%);animation:drift 15s ease-in-out infinite alternate}
+.bbanner::after{width:440px;height:440px;left:-120px;bottom:-250px;background:radial-gradient(circle,rgba(46,49,146,.2),transparent 66%);animation:drift 19s ease-in-out infinite alternate-reverse}
+@keyframes drift{to{transform:translate(70px,36px) scale(1.14)}}
+.bbanner>*{position:relative;z-index:1}
+.logo{display:block;background-repeat:no-repeat;background-position:center;background-size:contain;filter:drop-shadow(0 4px 10px rgba(46,49,146,.12))}
+.logo.ppd{height:62px;aspect-ratio:478/120;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAd4AAAB4CAMAAABrcmO2AAACQFBMVEXcFBPbW2LZGSLSDh3dHCUPHp6rEROanMkfHnjclptXWp8WGIQQC9puBm4nKCsODYQtLIjnA1/m4OoNHGB1dQTXMEHleoMNXK+yXgj6WwMMZe97ga9oDAmzAwnXvcxcJWd/f38KcXq7DBWYIVPiYWQAXwCoAFbWL0Pca2v/rwBrD+9eqAyqqgCx/xX//2OyJT+qVVWAfbH/amr/qqr2wb376+MIEXUgHHo0S7A/Q5MAqv8A/6pVVf9+hcV//wCqAKqFQ22qqlW+kIyq/1XkiXP3uLXmh43a2iQAAAAvMpIoKY0AAHoAAFP9/f3tGyUEBGwAAWkDA20FBG4CAWwZGoMAAP8SE3n+AACmqbEWFnsBAFYHBm8BAFjrFRyvAAFISJZTU5m4ur0AAACMjIwAADboJCt1d63OAw22uM0dIobr6O/ExcpoaKgQE3Z+AAACAZDMAgnUCBKUl7OGh7IBAVoLCXIWFoKoqc3NBAvU1ujnCxXOAQZYWKK8wsZsKWvUCBEBALDPBQ/TJDQDAFrHyOMDA4e7wrwhHYWTJlWVl8XYCxRSKne1AgnbExn//wCrJErYGivZExn////ph4rlSE321tjPZm7EuLnnNDoDAVwPEne4Agb/AP/oPEfwtrfzyMoCF3EA/wAA//8CFHQEF5PVExXup6oKE3dFLITmaG4VFYPQAC3QVlnBxL7iFSNBPZKVAQSdorjHqKhVVVUAADsCF1UCOXICNpc3NaI8QI9kZJvMhYfodHonJHwkJ4RbYZy6iuljAAAAwHRSTlMh+59j3hUb/uH+9qMHAwVe2Af+EwL2/ggICAj+BWv//wIDlP+sAgSXXgQFBAMDAv8D/wID/GxZvETcAwMD/wID/wP/A2hFmQcA/v4GCf7+qitwj0/tAdAC8OotzE78B/7+/iOsC/7+b/75/v7+swIPL7H+/m3q0f5Q/vsS/v7/yweO/pD+K/75//7u/yzxAf/5zgH9/f79//2pmE8B/v7+DwEBMQ2t/HH//LER//7R/g7+/wMpDwcJ//z+//7wzv49QnPLAAAto0lEQVR42u19h0Mbx7a3aO6xnTi93ZLc/u59/eu9rmYXbZNWSKsC75NQASEEAolmOtjY4O64xo5rEid2fNP7v/adM9tXKyH7YccmbGKQdmdnh/ntKXPa+Jit4yGOf+n6f0/FOH1bUG3Bu3VswbsF7xa8W/BuwbsF7xa8W/Buwfuzh5fd8MPo2uOU63Dd1XTvtq+hdXu2WoTY9YfkHha7Rb0/6fHeui3Wfs7Uy230EdVfeC5qnhK8acDWghU4IJro+sQb5Vw9/xfPngWWhU7xEKLPG2cFwTZKrj7xRu1/zVMO72iEHkE4nB8af2pw8ToDaHKMGAnSM/BzRGRqZ5NlBDWoNwgGVZbh9K8Nj4gEd6rWGCSG9e65pgXLSDAibUjB0SBfD1wmOmL8SfCDf8rhTfo3+IgIOJ8wxRHzVFDwgBea8GYLAqjJpIneiYw4mS1znj0z9p6NFjCiZVtH9eCF99I2DlKn/6cG3m7Sm+3auOO+P8Lq5EKnmBCYLIVlQl4TSQEl2ATeCUayzWot0kQ7B12xYSHo1xsoKW+IZL0F8Y9ynqATlatHvbZx1On/KYJ3Mji81JPt2aijy68UKZZ2KlBm6rBBk8AVEL1KDZZOeHUqB1XYbEq8eDOoyAxna/G8Cbpk6zUo1LnVPg6g8dDTDW8/6Z0aSnZvyJHsXRoySBXAC643SSY5IW+ORWxYurE1fgFv5uz3iQy3Ts8ys9eb7Xrfyr0nB/12mfEA8K6/5Gq8Egs9+J0c/g3sTN1n+i6Q/r5hsjFH7se+IYOfOSmIXQcEUePNEZUvFC4ULly4UDCQIPhVkgpKkPhNNm+QYS7mDS/L7Lbg5Typ18+/9zfevNn+DjwU9XJNIRMKeTx8w6lXDPYDJhtzwJsyREydZcYGL9dYzCEIClFuR1PG32yySKM7VhBVsp934lQfXt6LB/P2wea8uLOLN9dVwLzgvSpoR+qBQRCExcVFAZePD0jAN8piEW4XhQbwfrNx8PYCIzBm5NK6LNSCCeCVVZEzWdXML41ZJjzLGRwvJUdoT83Aa7Sww5tyIOf50jkZONUJmoQXFPMRbd2lltmm2Cpn9B3iteWhInEPxpkZMYh/hYJ6YqgevN199xuD9v7Bg4e04+ARb9nohDfkmuL68IoWvLFFOMHW6EYWM2ChD80YYd2Xk5uHFwgz6Bi94oUCyzs0dzXlPW9e8EaJoSBITDikgcdpfxJiqc+KBivHxVS1zOmEXjD0SYWuOrCNflso5LgzpF0Iaf1xoK/gC6/keITXdhvL6J99crB7qqseXvDIg4fmjgcCgTgegcDc3KGD79ddn5Lhvl5ywTIjGCA0A69DZHnBa7Ww7gs+ALy6rkeS+2vFsvUATZkvmA+IegtET+olZHJsbKzi9y/HvEQqBcY8FQuiwmHCmx0b6+smftRSWH0K6mti1q8oWtWKUdbzBlaDt6enHl5H3nohUHPMHTtCGsArmWaEB4LXoXHWgVf/wx4OXn2Z7b9gmk8K9e4jsmDcHmvWrEHh3dUJx3ZEiYvFomg+xZ9MKiaKskapUVFESZn6TCJEinEmvM/BjXkqDEJMNFYW8Tbog2NlMcYad8aKn0F/sIaU94n0XjYaFZhUNBr9Qu9av+0zRtY++4RIEuD1xOvIoeMBr6M9cOyIN7xDff1B8eHg5epoOIVG9wVjDwIvvYuIRaPrHW7limUWgxrbNkxu9eRKPepFePsIaGRyJFKm5lMe4FIIWSYK/I17pAgJEuClz6gwFjKiDx/gHcM7k2DeWbt2OwdtIhKLfexWloFlR6mNlwQjH0bQKCuM5pCRA8eT8TsYc9Ui0wFdL5NlCY27kR92Q4MI0IxPCCZ7skkPeMnBOTum8Xja+IQ/DnlR8BMOLz23LFs6gXvBZrwBEiMEHwpenXqhA5kQ4NDsKCANGh25fVvBoYiEFMQCPkDkif8HSWf9Nupl6RB6k/hkOecnirTftNj298OIRJAfX5HduwlSOjwFBrj7KzAlwR/14b4P/aTMcKN+EvxQoQ2Aer/umvKA9/1jDoodv9ziJOHjBz3It2vqx9zGwkv4hvDKD6I583guuLhm2lsUlnGKBIBDs5qbskF6MNnbNzV1GNiCbIc3ihgwoErJzDzPA49W/PAzFvTbZC+p9E1VqOz9XKGkPElGZ+SIv5BCbYDHNR2pdHYeJnBTjOeBcOFNkXV4VbAUdtCuOWQcAC8Ay/H+IAvu/Ii/K9tdA6+LdNOn8p23Lo/bz6UPecHbbSqzTxy8GmQREF0feq/YDOnMh9bMRR3/AAujnF8370hfOOCN+BVNBDN/ZlKCLI+CQv5LGVQrm+as3agIoP+R/vxYfjuJRAV8A16CoSjAAUgS6HsB4eVA2sqyhKtCCm8K4J05iV5QeR+8sggvzzwDMwArex/80fenauB1oBsPfHAGuU7nznTcDvChGtNhJdsdrIWXPAnwGl2qjM03xbPPOyIDeNMpxetN1AeC179jh6IUZPqiGPCG1oDQSLAg3mCYL6TRkZEIXW9RzdlSrciOUbUgwlCBI+tEocF7MoXwRr8n/QBAFuFlZCUyMpJDyWTCW2QOSHBymcIL3CH0KZiMEF5G9Q/1feOC96CNSOPx01c69eO57wDrtHntmPM2glI8Enuc8DYve1ldnuKLDRPisW7WAIK552yGk4ins8t73Rv0FzgulaJ0ihMfXqPUC7qQVAAPlkJH1ZvNfk0AXjlnh3eHkKKkzOKr98NuHg+AlxjwcjsseIEbJCuwRCF2eF8CBg9dm9SL8MLf7kvxpAbegw6he6vTdlxpseN7yA1vTzIoPJnwgg1AV5tY23PtotVYFYloqDdaRLwdS57UG9T0wBBHqRdeHQaUdB7Mqbh4keCPZCOkGxVkojIavKbsjWj2CLgVdHZJPy3b4FWo2raA0hmWVFNUgbPBy3BBir9BvSa8DMLb74D3yHGTB4+nT3W6jluXbQAfcsHbZSeXRw9vLvZLTwtvygte0QAPFCrDO4WS2MRHO4v6FoeaTz3bRyN4Q88Y71LOL6VYGVUdMQhvIbxcIGsjJJnv7PPr1CsViwa8QeHkjGlsRyNPFNQnG7yoWh3u7BxGpRxelGxnvt+hWjGfRXBVBtTthrdAjRF2lObiBl8OfHems/bYmR43AE7b9WfS/bjhDcr1LDsezJmeotLac2jWqog1OXndsXtrzkC9YZtZRhklKAw45augdIF8FYkiSJP9WowBsFii6n924aucNUyZfEVGPwQ1C12TGrwwB0DUpDuJahu+Of7+JHWOavAqX43OpJSvoGswpo5azJkgvB+S18BSbAPpkKlStVChm++Cl6Uy3Hs437nwTZaeedHUseZsJkqC5s0gW2NzfnSaM/lQqnOM+mtUK978zlm+aNUdzEHDe2zwlpuHd8SKzAqBxQH0qQv7qVmjQIJBNENcu66gbeLDoBplZtDCoU0MuBRUmwyIKaiK8YuMPAIWZSbFB3E1JcOtwV2a6zSSCyq7IyPSmk69QX6Gga7BxrE7qHJoS8EXPDKC8O6mjoBawTv+gi50t1feHNq+I0Jy/v5sZVg7d6YloJs5Dtng3QXe/FFuQ+FtbNYwFhRE9wKYP0htUIbWoxFswLsNzzSAB1Uvzvl8qWmHIAfGwZM2vGVZYARqFIYlS0ygD4aTMRDG1DUCJ/U3LypEWbtBFtY9Uc3kiO3gKs4mJ8vFfRROuFMGTQ66Fuh3+BT6M9gi4Xlwy+cp7aECehh9jJRzwnss7hK6+aF8crLS+zXMYjabNc6+e3pco+AjDnevX2Vr1JtHCe96hwFvSHcHam4izrY2slZFxDaSUKHhwrfJYJw1l5e+KX+93uiXzrOiTPmL0wUqWsKDrRPGLubQCW9C9AsKbuC7vCVr+5DnH+7sJqS/YhfB56gI/lunN1/ZWHgbM+fm4aWi0RZ+YYaS6A0Mdqx87hq8dxhgvWAc+zeO+3TNSKswnbv4IWSeNG/81O0LZvHVMHMyUFSDIfIHeNsx4AFjuOE0xDfQ4esPMbs2cz4ovKT/Y5s/fw7Nyy1XHLoUynF/b2Wyf2jBfjp/Ko12rIMOd28hVAMveQLgNcIydX+WY3CsU7F2RhoonBdhPPZQOk6KLAdJUGLtwRDgnbi9XhKKSLqXuhyS9/S7Tk05T0VZ0D+2EKk4r5z5AMj3mBNe5nHCS+pFu5MaeA349mpfhaAzIEN7oKu55vHlnohISZCtsuCYIyEmC+vmGKHD14SXgCMh/a57JYQeB5Lc3t87vOC6kj8dB+XZ5u7NSZa3+dHDS8RYnaNQA69kF63MNdOqvIzSzCJuY5VsGAe9A0IeP7xmzMkDppBp8OrzdYTamlvyDgzHUPb2VlD2Zt0r4LiNO+vwcszjtFo1ue7V10WRz5xGLPqEUDiEDhaEOmrq0UKu0croJ6BeM9bGfoZdF95oMJk1/fl0VQTO+sN2Ch0eu5esHMYgokqlz3Yhm/zFIXwdjtncveQxw/upZxoby9WYNWZUPesgxNg1aS3RxAjK5lMmrXwWaRTm6QlvCA97aNh6ga+PIwEU/fk9hsMXTBrpY7h0TFpStlIZG96eDAIFd0+NDZunF9BG4j8IwneOWPBaWvJjcQg2a3M2OuRDHg+XDCOmNYwQ2n4ahDo3oF6WZZgnKL9XCH7dZcBLqA//rV8AoYJr2uDNQ5V8fqi/f3isMztkcOf8awTV6V8cty99hyAaTLQC3jaCev0bA69BngWvFBjFXBXZtGRzAJ4ZNF7w7imybLHI6mJyUU45/Uk8H2PYxw8vhId2LekO3/fRmZA+9RzlxKR3rLPeYTS4dRqXvgctb77lgbUlBdz+yYNxdB+B/UVzCA9DrbbNP99o4etplFRH4VAgwiZE16n2BBY0g9bPmHmk8CoWvEdgzXsZvQj5Xkqcw3lPcGlsFumm5P1BHOGls+Pv6nHAa+N+64exP1rqNdZFtufYLVeaHF62GX5tHl+vWFhPf+8OzUYaEWmSMHJ1zBui1gsLXtYIXEazg6YcWSpSE8rSQ8A79LEOL9WstGXvGIpWuwi2hO4kXtlVMRe+ut2Z+NHd6w0vu34SyiOVvca6yJ6uG2aM1RPZTdxSlmPKpEEKsSe8OdKdzQ7rXECI2f7mkAkv645U1mV1yHV2w+AtKpbDF+Gde+tI/5hOo6hO9TnBfU6j66E81anvvXXc9PoS0MAtb75po2+QqcPw/semWvE1znm38csxCGvhS2LNwqsFwi740WtGLYkhtOoLMhSWSGkBdSCOozH0B4TQ5B9FN0GU0ZwBFFbwFUTZjaXeGYS314L3EDpg/j5vSdj+sVqh+xxVqRF/jMo6ZsEbsYeN2wxDnqsCVn1c8Oo2ZtWp7nCOpCMltebIV8g1UAwbwNvZi0BCwpHEXFXR+0cID+iBcwcCn4tYAAJ9gxDNFdyxO4LRyP8GWlDXYJTP5YJBaBzayMo4Nn8+wtv+FqKmrXzzw0iqxBTBlSTFmxJ0dhKb/TdUxrSYK2BNXfesrA3LZ+otvuwNHjW8RogrX8f4UQujpVh7ag6N4M2izx0KPUja6zN5j6CXUYMXAmnuTVJPPKpuy6OjKK5Hwe0PU4TxyxKPjcMbBy+wLQe86VNnkERh5Zu1RPDX26nniApd6zxScX7naVP2Arw2QrUn+Hoa9riwqds8anj1N8mlBNjer5qMMscIwg8Ebx+QK/RMNHiznc/tIpAPQT3vwjLpzmPIzH6MxSRyqAgRcLuLRQkvlkcw8UBCDY/buLJlMBOmw/dIOnDuCl3VAsDf91MLMwRBI9h9Y5rQ1akaX4BJvJ4H1fmQEaxx38H+LJ85hic2qmLxqOHVJWktn7Vl/Nbof7yVJfjQ8NLo5AqCR+GFkFgkDiANDMwBEQ1nQHXTLoK0hqi7C6ROeNcGwPv+cQzBOWOjTosla0KXsuntlLormk8wbqx7qTd/NOWV6B4RTrK1ZQ6s2jmPHl6qB7ub29ZGkL1QD3rlAeF9E+PngC+Y8C7oWSllHBUqMocRQnDNR8MhgFc+qcHLCLw6MkIwTWbj4MUlg+nPJ8eNlASdai1i9ZtKVtaSzbfOjVs+BQqvwjrr09RdGkFMoeSvBy/mQW3kuldfF9WWS7GKsLhtj5xnHksz8B6mbNgDXtEFL+gpSL2yTr1A8P7tlcmNpl4xZ+XnH6MBkuNzO03NWFv5AjEvO4QuvgD/dHqVxuMcP+Lh7qVTpDrKUTkuXbMvS2rh3egUMt4T3vp2s3VSIerA+6OW5wfLa3A4mfBmTeYMMraP6tY7gDkTF7xa/PLwhsMb+fFjIz//kB4BOU5tGzYR25ml2hVas4CKF6hFA5IGaTjdC6Q2N78m5E3G5Hta/CUEtpk1pmGZGpvSwzeydjVvc9bWRW77IruG8ah4aZStbzGNNQ3vJH39/Rc4g3r1dDDgt1EdYwg2H6MMvwZenpJ2/8bCCyw0Mmn68w9aeUU0IEen1TFr1QuGjqwViGMPlgQF/DWHodUWLo4I2secknkqzOvAy1n2fg/FZv3aGiFn6RRDiQfvQMjbMVyrdFly2WtlVK/4QhIZXoG7ZFAv/IX9YBHkdbMGC4ryZO89Kml15kxffF3v8ie3TxL/hsOLKxpdtzJD2APxORpON0WXt8Om0L233RZGp4eyEys3f7ed/X3qYMCKKHBQgqkIcZ5iIUjspefcM0ij/OsqNuy68DJOeDm9AqKyx6N+3bJ3RJXdJD3TnGqFkc3Ly1gAZQYeqC2MyGhwGRP/4CqYLp7/AkKeMb4ZNA+eYCk+MRdBeINgqP4cw6EjBbJc3mB4bf58gztjoolTBC/sQkKmFo53T8eNNAYaye5RekE36+7lHYU6Igr6VCJB7WFfBXcZfuZCPfr0NomsU3PH5pGgRlKD0QK8NdRL9QMP1c8mWYJszVUvhyDEMMMRTTFaQDPkfMIoCiyUROC0MGX6l8h6iQQtWJmJ0p8sLdUwA9eEFLT78wYW/HX6848AaChRz8HP9Ph4CxXBh41ocao6X/kgPo5XzwG62PaQpzdfP6JKoyjGl4jf2+vGFvx1TSJ2e4l3WTEubLeH7TVX2B7GUQ3FHV7xchKpb5VpFIxjWzsofnWv41TIy2uw9uA1qh9AtRKC9yx4ybH4ue/++m3LqTP5M2dAvmoxsWNUo5o0hW7LlTNn8rdOn/3rt6fjx41IOnA8/ZirEaLCqEcBQfqvAIQV0U9FZKdFUIMHxYKnVFw2ulJYb3OnDg1BC8P//dQg5pwXishBefZag/plhA81Fa2hBQJZX7RkLi6lh29ZNZDsYc7On7Rk0YYW28c4BtPhi9E18fRHf32n5ewVqh1DusJ3z1GD5L2KLnR1rfrFFmg1F48fMmGDXoK16wuWJ15VIoNiivmlpXrxdQOZa+bWUSjYizuH7L4CGklldOehJCFle+jGlsfIs2Bxc6F0rErUn3ovBeaqA16Mx4mnz77z15azaL16swU4MTVzaEJ3fPzcTkrDH/2Pd75tj4MC9r5VeqGnFl4qbvggcYMrCRR6VdGOUdUhYjleMQ/VRaDwPqrmxVGvemxgo7JaKPMYR6F/5r3q0C2qBa+AjHllVMH/QV1Q5908okl4QRZ/8dPCS1/1++AtsLJ7qdr87Ts7WyisUFJj/NwtLXV7VYf61kctcDlgD8RBeLMe8FKjkSwpQSPTiwQVHks70eVoKpUyohvt98DJlBX36B5zyrhIb/ZSrRy3c4zxJeXdOlWnD9aMu0w9xVtlQCSKI4H7kFbn6IWd73z70U5d2sY/uvLciyB0aZGNd88CcX9ECyDFj1nofg2lFzzrruMZKBkiQl7mBQkKeHFPWjwh86i2yuA47qffCcWVn6+FSwLAIILPnn2XiuD2cdSjT79Jcz/Pwnk9wXfuSE3pBS/c3BFE1veQcXjFDHtdcF2t4/l2NVindVN9NAMv21SoVIirm33mVrEb9MF56pSu6dfgdebnk781yh0BlZ6lOtYV4MQ03xeELlB1u2GwOmgvvQDGkTqlKIxamRiistHRYk/6NlVN068L0fC6KSns+p17waunoiDAcyhjX0Rx+8ELz1Gh++2bO9vjRm7+QftLgbn53gsV5ueyC5kQi9a/5/k1Y8klnXcZya5GP+Oon0wwV4bltYYTyYpld/rYXiZaDrl25vHR9bszgduGbyDe/q0mgvNXDKFrFlZxFNbAwNj7dbJhXcdAeHPCu0fiJVSy2ZN66Dz+/5KMWbf065q+3uUlgeU0ytPT28qR/X5eeI8pS8wMDZZlJAnVE8NLzrIOxgsFOFRJUiEsXuSMQrMs85dPZahleZ5hn2FOhmj3mJ0PXeV22RK46Rr1iFlyML7a8teeF9F6deYsCt05s2rO3MHaUuyjNngbgPiY8E2EmztnjSu8zscG8MICmi/CUk+2F+gBUlWx/M1vbNHzi+oe18KCkcB7fpgHk2nRNLuKTvauK+9a5QCmiE+RVVgiOohJlJhXO9bsWU4+WtP7x4/dJZ3fP5a26uO0vPPO2Q++A6H7ogVufO5Ig1rdDdSDMHP0k8eC78BvPcBteEf4X0G9uLou4mSC74/fIRUZcbfEYwHIUYkTpfNlpqzwMS0bhfBRplxQyh1gEeDLCDCP9kB/lAFrgCT9W6h5xEG85GfzO6B+CitJvCrLtI4k/JSuGo+CDdZiiiJdw6oM5TKEeigiPE+MQZE0hWff+0LkeTHko0EVNqOzV0FYEMEft4AUbrfADRx736McrOVRCDMvX6wzh4lS67NugkgM1CUj7Z6mZt7d69GJmiZ7LzbaNbGt+gd99BOz1deNv+STbczAuvACsGCApAHM3y909pcZnhcW1Sgn8cJv4OOXUm/nAvql2BSceT6WHMsnY4ykyCwNyEVb/tefdahFbuRwvqICzV9llQp82ntVFa/ehvK/sjoT3dHRwaOZLsRKqgyEzhXgfUDceZFV4T5QbOG8UuncDtEhvCCosk/LrurqqykrSY7Ya8K+8O3Oj2xFJudq6sFSm6Rlcg4zbSuJmllBmmISK4G2xmSEwjn8ryXwS22tgdJv7RQZZu5kWuOZekQ6wBw9Hq/SqwlmNjD3stYQPmdqhusFryRp8m7+P0OdqPMnMbgZ/okicwN+CeS5fD4ZpWIVziCelXkKDfUUd1LqFaC+qB8+EQ4+lWmVueh1/hqwcyTYmQNA5/P4kBD35W0sMMtIMjMDne/hr8ew3N0o96XaEZvszC/sgJcNY+l91KjuVp0N+/OxtL24pPnphYMeu4R1a0HsJryZ1UHGA6Zw+JObrithJpzxXbIoEM5PJBzzPph5VpvrAZcctVP1AFOt3jG+TIQH48dPOKFMMJnA3Wl89kAdeEtwdYC+XoOl1r+E6ZsWZqZbm4CXRRJKYdoQP1ooKGJRLbIICy+HBL7IypECX1DospGXT1IQK9IfVYGjlQEwZGdM5VA1gtqC+e/x0zza+L+O7uORKTMhmb8m8Lt2WRVZRYUN8QJ2DtC/NA/Se4FnrvNgQofHzzOvSueBtfs0/4qtOI59X6Kclp/tqrX/i+Vczmxi3tYLBVisjUPCjG+6as5K2PYTJrnkFHQ47cd1BkjPDpZWp2d9ZovwQCkwy1yyYKDtBlzyMswkTgTesIDwtbXVhN8OZu44Ba0L6dc9mUppuobgPakXk0zk+V/xdG0iA/UIfMceIC5ESJQMfQRpmcLbW17kv9QU516Mji0j/ZchWmJBxU8oj/NKCm/U/l1T4UwS6lMCtKguqwILr48MLheBPylVKDuAF4G/retVrMhzPi2iEfNHdB/a5HCv7fDvOHLoGN0sAwzM6bljhw5+T3bZrg/3m97ej3udmlWpDUlx21HH3Gw7CpQxHcYrgxMmvNUTpZef16Z7MPPKxGp8dXVl9rdhg54HMvE2Cu/r2xxTminNhs3eBwYSsyuD+pdnM/hp4mgtI96GCB41+zHqjP1B+1Gt4s0wKeFP8F4czgSTmU64+/GCV1YXfwXiDqHpEA+IiCkPOq5A0RHU6wxULAtpalGHstD5ZoSVeV3lPgwuV/4Gqst8b2d+soxcG5kzinAsQ0f/hUbGOiuRGeqJ2XftC1G9EVVBO1P33OApK89PivhskX/11XKUVRfxDfPp+Rb3p/qNfVqGHXU1eqEanf/IQTyOHHnfn8tNOuprVIy3gmpnDvfcNIV3tsT8w8C2SwPhba8PgmAbnAaqnJ6A6aqu3LxjztonEwxcBaaYaA9kMnFf4pMJhwqU+C1zEQAbBOb5CgAUfgU48aUqiIu7jpk/yjBv3MGnZgLTdxIDmWk7wVMVbaCUCYefna6Gn932CQoK5mKCkvAbR5kBeM0Cq9VL8JQJfHVC4fB7ien4LIzU52bnnute0FVRmC7CL4krAyQgd4s8/7lUBooTVVCwcAErz78HP5T9QOSillD8Eg9loKHcM3te6OCl/USaOQBNi9L+HdLMzPkoFeHMvLwmfr9fAp4ANlJ4xHk4yfHni1fhYahv8f7doJmDMC7i48EHqmILnMQ1cMnCRoLE3IvRXllDSz0xHLaujFBwERFzWTTkCjTV4YW5uYg8843ftwJTHlytMq/A7DK+9OUA5d4g8i7i5GWApoFNp9MvtIwjDSUyR/VJfeMo/L40nYG7V+DKr2HME7/+/crEYHV2PHBiQsf32Te2wQffCnY60X75OLTMrExYuISRbC9dmoZB+Fahr1l4XRK//v3xQQYBnp7FFXHpcnqWPgVekBVQn5lq+tx0+OiKb33qxaMofEEzmrBW4OdfaIvVovCn4oy2jZq2meHMjT/hkhjXsTe+1Dd914ttwZqY78A0Qs5c/4agyDfzJQQbXGXX0NN/lTPqFGo7SUN/B64y+IB/Ya7tZTpeouUGtS2qOc1qBTr9sn2/DCO/yE2h7nxumn9kegP7el0ZBe2tGFTySvvERGmWef1O6daL8Iu5CTNbAlW01HIr3cq8griUYIZBPwUsEkzp1LuX3w3Eb4KKu3IHsUkwg7++M5AIP9veCqz0hQyTOTHI7M20/NNxZL//53Lgru8k5eoXZ18GBO+szgIqg3NnTsNz/rlF0+GYi9tMfNqmB37DtLYOVNt9zN7q6SvnNHipfJ2YfvfF0v+EkcO92+D6BDP73ZXVsG9lsDl410vOdVYfZD1M0yixbWYD90Ythixh188D1p7gM7aIGLLbJWFPD0cFqyF7loJZMMdmCSHfLNlTt+l8l9LtpVKpPX1iOhCYLp2A4Kw4fE/fLZUC6dYTGNNV0gTvLGWPPqrTltKX4T+6+spQynseyQzpui1wswREeSKQPlE6gcFgd0snTrSciwdWKXbhEiq9A8zNWezy+GVo1X56ThOg1V/D6/NJpoTH3TjcBjfDE3Bg6QDCC08vwYaREyvnzqXbb7bjGNvTgwgv8Jjm4Q15JWCzrosN3gMQk7LNGhRqUJXF5mGqeajtms+ITZrMOra7MfKLDCzR3Z91V9ew2zQ+Hiaj9sgJVIeNZfLNu9S6qW1kpi2c462llUCJroNmq4mJMAi+0mAYb4Jr8XEg30FdtR0sPZsIhxPPJlbi4+NQhra9FbdEC2hdYQ4MqF3AV6sl+BmeCFdnoavEtLYdz8pRfMBECZjrpZJ9nx74hd/hQfEqPBXoF2gfDC7pgD5I+Dk4cIeptgfGJ3zTzcneJ9Odr5fgG3K5FZwieMyfO+ysruFA98esW7ECplvNtGVaWzOZ6qXBTCYziD/gjHZUQUDCygWJa7qqjaQEQDzL/K/TgbaLplKN5pFp7Uv13KlTO99uywxO4O2DVb2jtrYMxbCqq1GZWdSRfG+nW+FKZhuK3Fng14nq+Hi6Vb/nd2/DcBjooTpRhSbwcrx3E1+1f3jl7fTpnadOae3CKDIG2+O+o7OPr2wZ+wjghR2tJSjG7DJMOopbdSZzWVdJK8cON0C8Chf2GNzsoNPs18a41sL/9USgOjgxUW2da4NF6UBrmk7mpbBx3RdovTiROJpZeRFcVq11rcXVQCv0MpiJt+IDB++uWgbJabxrsOW741Xjj/6dbX27DaYgUQp80AYPTLTGIWLhVuYf8QKq6p+ASGAGfMxTHIxjku/SkNvubBW3yvtNeGnVHLeziBKvC93Ey77p6cDNl0F9TSSQc24DibYy8SfggmhuGqAIhhlktquQ0dLaVpptnQ7cnQCLdNhm5EJGC8J2/PdnT6dXtiGjxt703/QzNWytAqtFzu6bbW29iZL7DlzS4A20ZqrVt1uOH315IgHLpRPHxwf/kNC6+eTli6VM5m7g7v9uPTE7G0jf/OfvLp9b8SXCE4mLpdlZeO7gU725uhUZnOxZ6q8xPBvqVN6k3sO1Qa3JHjBp1MaIg8a6MpvxWfalbdOBTLXG0hDOnFiNj09ngBOW4qsl1yLklbXB2XaQ20CUpem2aj2DMVD5zcDqahwUrJOZlcCqZY4EwgbQV0CgZzQ1urSaydhvBBtZvAQvQls7aASvM9Mn2i5qDSdKK+Ptg54WzKcOXlaBta/HZoL6YsiAt5LM1TYZwi1iZS+5sW3AAcGEJymAJelogq6BGN9gjXcGeSalw5O+bY2dedBqG+0l4XOaq47Otrz4u6rx3tQOYhDMIf/4DNhc4MrJxFFbj4MJ7/fpKYNXC/W+PzXk4SsgvVDlSIM3O5xc9thSHV+LwswzzbjUXwnXc8JSdl3jNaDWRtPZlxhogO8lw9mUcLlu4fPvPjhx1DJHO90cYQNL+PU3+OXvDHYzUNcH/LTBS/dV6+6ZqnUcQTWISm8WVKupsb8fAqcWqXUVwV3exW9q/LYDdfy0A4Ym5ekHDA9Q4MMD67h7B/Qwn3DC7Vm6ePGibyBcL/jCevjzzqcM1PMzP4XwQt20XT3ZH0kNulhNox99DWOUS5MaP++Q/6eol/iUREo+GfBqBayHp9yrI12hqtC88s4afKE+3VQF0sGYZ57oP3MgHA7/vOHVkmoBrKTdOGmshqD8x/bOWnwJqFVQY0XhrjHMFvU+0fCGnmEL5F7X0n2rJoKJbicaJRdq8SXDS9ldJOcVvD4PjqrNcUj8/CaAF2O6dpBk19R2A18T3Xw33dmrBl/SuwR+4mXPEghcVNgsR5TbDPCi8Wo/OAP7hrT8aie6tfgS8lo227uhlVy2mPMjhBcr0kDVw56l+xS+Pie6dnxhSzIsJbo0RcufflFnU4FNc2wSeJF+kT8vdYFHaHisTzus3F/izy5oRwV15qWeXlJ3SaRtBcKxTeRS6Y1YzqphwNbrL/QA6VoN8tXsNQ88Ny5pvO3FUwovrSiF8lcrFGrur+n318RRJu9PZb8hT/KCl32YjZ02M3PW8IVSebDcqfELuWxVPfQVKNf1UApY0YeDlDktzR1y3jQux+klQoBmOUyIhe9lbSOwaJlmVeEmYnJUy6QKcebuitEY3inTcDRKdlriPkd70KuOlDENwMqZLorlclRLuzWeqF/jYrEDep8ar4jCaPGyRsbAI+iXWIz2z24eeDV8wb6xNOSviy/YobOUgcv1zBmwiB6BiRJGzFQoga/rqsZAzxiG7CLIZZ4fgfSYmjgjCTYeDgkjcoM/RuAd6Y+y0nt4+Hvp1ZBX3SusGcYGYVcy7RDVPV4DkzYb9SIyXAHxm+rqrkPAKHYR/dFoXc4M4Xkq7JWagrhfqB8iQWSmIBZjSNBAz7F5SE5lZQHCcaEgA+xUCrHAEZGl9A5pqosYo4sZUzJuRCBJspHCg+HC0FRgtMtwBbqV5kVI3SrPl/ERLFu+Lp4XZ7TdsNEQM4alHLEXAUlflOQQhfcHPwaqjkJsZ4x2A/CmyvgoOkZZuCHiHbIchv6xzMvmgRe9g1CdtBsEcK8nAcMuKEt46UOhfuwIwousU4XQ6ogkwrbj8khHbGSRhch6Kdk3rLJXVWVeUCVZijEqxOTD3qWitrUzixhCZDbQP9TuU8UCpvwDN1AXF4sybBgOrd+DyyLmzYXkiBg7z3bw/X39/LXrIwILG5JLWCULbrhHdfx+FVIgeTGnstERFa4JeE2Wbqssy8uqnDovQrIs9PbHKC+LIwI8IcTyAmwqJWEaGMSgy5LKPlxlnCcTXoZWCSdfD09NDdUSMDDuHkrYF7hGyrANXqjUKapAk9ev4TyKQqSSXwCagi/CyD4O973G6f0P2h20EhHkQQK8+xRmMXKbYUcoWmIODEijYCCD1niZj1ynqef7YKNqmWzPb49Eb6gUfPwH9MtPanvDq8+UIxDNH2GLuMMQDAg7k26MwNsBw/sVdEJfliJlNnRY5fmZyG6MHYbH/AZoOfKQda2eUHi1anLgROhZ6nnN7wrA6u/q64EYWIh6bRT3ReEFXQrhhcRIgFeAjAlRFfiZGPn3GM4fgkusFBnhBQ3eog4vS+Hl+RCL8I5c5zBXGYlRnSnu6RjB1uyvABBBAWLkBCUSubBX9P/AF/joAaRtkWOhP1CHpF0U3l7170T1KheLFItqjON0eCHd44f9MUzxKPOQGY/M+XNJSZLymqwK5w8AyxkpUB6yKP2Q/H6zwYsCWFoGDXppqcsWN0dQp17qguKhhWhjHxGm3GC5AKA8JEQdXlZRylAy8N9RtValm7uIEUmDd48Jr6BTr6QgyTM6vLrsXaTUi7w7JBSWsdTqhUhMJK9il/heqFhLV6IMOEjjiJLY+ZdAgkXaEX0qpnQIQQV2gdm9D1wl2+ehyX+SduU7k2XY12lUYg6AAr9DZQpA35C8s/ngpdXkQIP+puvjJYNDA78GhRnpOSiy6yx3UbORrgtS8LYG78g1FJvwmz15QIXMYjGK1BsTZzhghsizR+TUvhGNOe+DlrcjghxB6hXgn069tNN9TEHpQFk+L38J4rwss9BxMchHhfnU4kj0PyJPUGkS7EuSfyE/1q+ylDXII2xxRIMXUuwwKRZfBGlyiCws+PkD4sir0mS+siz9BYYCKXzz7B54hXj+S7U3/1pE3nTwYvUlDnZnvzecneoZphuS+Xu7lqg0VqLrB+SGYJ2jnpdhzYMJcrLUIWAiFIu7YLLzwJyLLKguLPpjiiloBJ+gdh1W5sAFUpT5nFclcX4v3sTN09kV53EPL/h+nV7CBRQkbEE9Av72q7Ak4vn5X8HC6EvQ1OhCi8GqJfwPCu42H5sHWj7PsfPwdAnX2Ox8lKrwMLYOSeVlvijzV6NQvkCEqgkyVi2ZPw8FTnDosgr6mLiZNGebiU/ej/y4pw+CrPz9XcCpv0HS5ZqxVGGKzKXa0zTPs6ODXof/i2ayVNHVcMarFK4j1rv4R9qD1tdMh2fL0PpmK1Z70PP6EPacpwuCq8Z4Zoqba93ryJkpilBjvHso+3FPFwjdfiz2GW0ylp4zrMlWFSDth55tw4bMSmohZ4g+a5mi3Uk0egUgzrhi79v6FbKNIOQcgXbN7Ba/rmkiH99HdqZ8vmw0DaGBjK2tqbdZ4KUTFAUVy//j0NJUBZa6y2gXetg6a01deYAmIXu70MM+x9YGP0GOdRO3bhJ4KZYCD7HN3wC4wUKMe9qLff7MXQqeTjEBKjKT5QLuF77ZwW2u4uXmgVdDVJAKMsf8/MIyfgbwWrrOFq6bEl4A+L+f3AJ388K7dWzBuwXvFrxb8G7BuwXvFrxb8G7BuwXv1rEF79bxNML7/wEtse0qgg/rrAAAAABJRU5ErkJggg==)}
+.logo.jtm{height:72px;aspect-ratio:266/170;background-image:url(data:image/png;base64,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)}
+.bbanner.intro .logo.ppd{animation:slidel .9s cubic-bezier(.2,.7,.2,1) backwards}
+.bbanner.intro .logo.jtm{animation:slider .9s cubic-bezier(.2,.7,.2,1) backwards .1s}
+.bbanner.intro .btext{animation:rise .9s cubic-bezier(.2,.7,.2,1) backwards .2s}
+@keyframes slidel{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+@keyframes slider{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+.btext{flex:1 1 260px;text-align:center;line-height:1.3}
+.btext b{display:block;font-family:var(--font-display);font-size:23px;letter-spacing:-.015em;background:linear-gradient(100deg,#2e3192 20%,#4a4fc4 55%,#ee3124 130%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.btext span{font-size:12.5px;color:var(--muted)}
+.pxs{position:absolute!important;left:24px;right:24px;bottom:7px;display:flex;gap:4px;z-index:1}
+.pxs i{flex:1;max-width:16px;height:7px;border-radius:2px;background:hsl(calc(4 + var(--i)*1.2) 92% 58%);animation:pulse 2.8s ease-in-out infinite;animation-delay:calc(var(--i)*75ms)}
+@keyframes pulse{0%,100%{opacity:.22;transform:scaleY(.55)}50%{opacity:1;transform:scaleY(1.25)}}
+@media (max-width:760px){.btext{order:3;flex-basis:100%}.logo.ppd{height:42px}.logo.jtm{height:50px}.btext b{font-size:17px}.bbanner{padding:12px 14px 20px}.pxs{left:14px;right:14px}}
+@media (prefers-reduced-motion:reduce){.bgfx i,.bbanner,.bbanner::before,.bbanner::after,.pxs i{animation:none!important}}
+
+.cell.sam{padding-top:16px}
+.cell.sam.k{padding-top:14px}
+.cpick{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:12.5px;margin-left:auto}
+.cfbar{align-items:center}
+.hrow{grid-template-columns:132px minmax(0,1fr) 68px}
+
+/* ===== lapisan interaktif dan animasi tambahan ===== */
+.bgfx .pt{position:absolute;bottom:-40px;width:var(--s);height:var(--s);border-radius:3px;background:var(--c);opacity:0;animation:floatup var(--d) linear infinite;animation-delay:var(--dl)}
+@keyframes floatup{0%{transform:translateY(0) rotate(0);opacity:0}8%{opacity:.34}85%{opacity:.22}100%{transform:translateY(-118vh) rotate(320deg);opacity:0}}
+.bgfx .spot{width:520px;height:520px;left:var(--sx,60vw);top:var(--sy,30vh);margin:-260px 0 0 -260px;background:rgba(255,255,255,.95);opacity:.55;transition:left .4s ease-out,top .4s ease-out}
+.bbanner .logo.ppd{transform:translate(calc(var(--mx,0)*-10px),calc(var(--my,0)*-6px));transition:transform .25s ease-out}
+.bbanner .logo.jtm{transform:translate(calc(var(--mx,0)*10px),calc(var(--my,0)*6px)) rotate(calc(var(--mx,0)*1.5deg));transition:transform .25s ease-out}
+.bbanner .btext{transform:translate(calc(var(--mx,0)*4px),calc(var(--my,0)*2px));transition:transform .25s ease-out}
+.pxs i{transition:transform .15s,opacity .15s}
+.pxs i:hover{transform:scaleY(2.6)!important;opacity:1!important}
+.pxs i:hover + i,.pxs i:has(+ i:hover){transform:scaleY(1.9)!important;opacity:1!important}
+.kpi{transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .18s ease-out,box-shadow .2s;will-change:transform}
+.kpi::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.75),transparent 55%);opacity:0;transition:opacity .2s}
+.kpi.tilt{box-shadow:0 18px 40px rgba(46,49,146,.2)}
+.kpi.tilt::after{opacity:.9}
+.nav{position:sticky}
+.nind{position:absolute;left:10px;right:10px;top:0;height:40px;border-radius:10px;pointer-events:none;background:linear-gradient(90deg,rgba(46,49,146,.13),rgba(245,130,32,.12));box-shadow:inset 3px 0 0 var(--orange);transition:transform .38s cubic-bezier(.2,.9,.25,1.1),height .3s}
+.ni{position:relative;z-index:1}
+.ni[aria-current="page"]{background:transparent;box-shadow:none;color:var(--ink)}
+.ni:hover{background:rgba(46,49,146,.06)}
+.ni svg{transition:transform .2s}
+.ni:hover svg,.ni[aria-current="page"] svg{transform:scale(1.14)}
+@media (max-width:860px){.nind{display:none}.ni[aria-current="page"]{background:linear-gradient(90deg,rgba(46,49,146,.13),rgba(245,130,32,.12));box-shadow:inset 0 -3px 0 var(--orange)}}
+.btn,.lrow,.seg button{position:relative;overflow:hidden}
+.ni{overflow:hidden}
+.rip{position:absolute;border-radius:50%;pointer-events:none;background:rgba(255,255,255,.55);transform:scale(0);animation:rip .65s ease-out forwards}
+.btn:not(.primary) .rip,.lrow .rip,.seg button .rip,.ni .rip{background:rgba(46,49,146,.16)}
+@keyframes rip{to{transform:scale(1);opacity:0}}
+.cell.cpop{animation:pop .55s cubic-bezier(.2,1.5,.4,1)}
+.cell.cpop::after{content:"";position:absolute;inset:-2px;border-radius:11px;border:2px solid var(--accent);pointer-events:none;animation:ripring .7s ease-out forwards}
+@keyframes pop{0%{transform:scale(.7)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes ripring{from{transform:scale(1);opacity:.9}to{transform:scale(1.28);opacity:0}}
+.cell.hl{box-shadow:0 0 0 2px var(--accent),0 8px 18px rgba(46,49,146,.25);animation:glow 1.1s ease-in-out infinite alternate;z-index:2}
+@keyframes glow{to{box-shadow:0 0 0 3px var(--orange),0 10px 24px rgba(245,130,32,.32)}}
+.cell.dim{transition:opacity .18s}
+.lrow.lit{background:var(--panel2)}
+.cell[draggable="true"]{cursor:grab}
+.cell.dragsrc{opacity:.4;transform:scale(.94)}
+.cell.dropok{outline:2.5px dashed var(--orange);outline-offset:2px;background-color:rgba(245,130,32,.14);transform:scale(1.04)}
+body.dragging .cell[data-cell]:not(.dropok){animation:wiggle .5s ease-in-out infinite alternate}
+@keyframes wiggle{from{transform:rotate(-.6deg)}to{transform:rotate(.6deg)}}
+.lrow[draggable="true"]{cursor:grab}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
+.toast{animation:toastin .32s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes toastin{from{opacity:0;transform:translate(-50%,18px) scale(.96)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+.issue{transition:transform .15s}
+.issue:hover{transform:translateX(3px)}
+.pill{transition:transform .15s}
+.pill:hover{transform:translateY(-1px)}
+.kpi .v span{display:inline-block}
+@media (prefers-reduced-motion:reduce){.bgfx .pt,.cell.hl,body.dragging .cell{animation:none!important}.kpi{transform:none!important}}
+
+.lrow{flex:none}
+.list>*{flex:none}
+
+/* ---------- tenaga pengajar ---------- */
+.tsum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tlayout{display:grid;grid-template-columns:340px minmax(0,1fr);gap:14px;align-items:start}
+.tside{position:sticky;top:12px;display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:12px;max-height:calc(100vh - 24px)}
+.tlist{display:flex;flex-direction:column;gap:5px;overflow:auto;min-height:0;padding-right:2px}
+.trow{display:flex;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:7px 9px;flex:none;transition:transform .15s,box-shadow .15s,border-color .15s}
+.trow:hover{transform:translateX(3px);box-shadow:0 4px 12px rgba(46,49,146,.12)}
+.trow.sel{border-color:var(--indigo);background:linear-gradient(90deg,rgba(74,79,196,.12),transparent 90%);box-shadow:inset 3px 0 0 var(--indigo)}
+.tav{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff;background:linear-gradient(135deg,hsl(var(--h) 62% 58%),hsl(calc(var(--h) + 30) 58% 44%));box-shadow:0 2px 6px hsl(var(--h) 50% 40% / .35)}
+.tav.big{width:64px;height:64px;font-size:22px}
+.tnm{display:flex;flex-direction:column;min-width:0;flex:1}
+.tnm b{font-size:13px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tnm small{font-size:11px;color:var(--muted)}
+.th{font-weight:800;font-size:12px;color:var(--navy)}
+.tchip{display:inline-block;border-radius:99px;padding:1px 9px;font-size:11px;font-weight:700;background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-style:normal}
+.tchip.pen{background:rgba(245,130,32,.14);border-color:rgba(245,130,32,.45);color:#a55200}
+.tchip.ok{background:rgba(15,138,88,.1);border-color:rgba(15,138,88,.35);color:var(--good)}
+.tchip.ex{background:rgba(178,106,0,.1);border-color:rgba(178,106,0,.4);color:var(--warn)}
+.tchip.away{background:rgba(42,111,209,.1);border-color:rgba(42,111,209,.35);color:var(--info)}
+.tchip.res{background:rgba(74,79,196,.09);border-color:rgba(74,79,196,.3);color:var(--navy)}
+.tempty{padding:18px;text-align:center;color:var(--muted)}
+.tsamnote{font-size:12px;margin:2px 0 0}
+.tsrc{font-size:12px;margin-top:10px}
+.tdetail.swap>*{animation:tswap .45s cubic-bezier(.2,.7,.2,1) both}
+.tdetail.swap>*:nth-child(2){animation-delay:.05s}.tdetail.swap>*:nth-child(3){animation-delay:.1s}.tdetail.swap>*:nth-child(4){animation-delay:.15s}.tdetail.swap>*:nth-child(5){animation-delay:.2s}.tdetail.swap>*:nth-child(6){animation-delay:.25s}
+@keyframes tswap{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tdhead{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(120deg,hsl(var(--h) 70% 96%),var(--panel));border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:var(--shadow)}
+.tdname{flex:1;min-width:0}.tdname h2{margin:0 0 6px;font-size:19px}
+.tchips{display:flex;gap:6px;flex-wrap:wrap}
+.tnote{margin:8px 0 0;font-size:12.5px;color:var(--muted)}
+.tno{font-size:11px;font-weight:800;color:var(--muted);white-space:nowrap}
+.tdetail h3{margin:0 0 8px;font-size:14px}
+.tload{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;align-items:center;margin-bottom:10px}
+.tload small{display:block;color:var(--muted);font-size:11.5px}.big2{font-size:30px;color:var(--navy)}
+.tbarw .bar{margin:0 0 4px}
+.tcl{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.tc{display:flex;flex-wrap:wrap;gap:3px 8px;align-items:center;border:1px solid var(--line);border-radius:10px;background:var(--panel2);padding:7px 9px}
+.tc b{font-size:12px;color:var(--navy)}.tc span{font-size:12.5px;font-weight:600;flex:1 1 100%;order:3}.tc em{font-size:11.5px;color:var(--muted);font-style:normal;flex:1 1 100%;order:4}
+.tc i{order:2}
+.two2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.two2>.card{margin-bottom:14px}
+.tul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.tul li{padding-left:12px;border-left:3px solid var(--amber)}.tul small{display:block;color:var(--muted);font-size:11.5px}
+.tl{list-style:none;margin:0;padding:0 0 0 4px;position:relative}
+.tl li{display:grid;grid-template-columns:130px 1fr;gap:10px;padding:5px 0 5px 14px;position:relative;border-left:2px solid var(--line)}
+.tl li::before{content:"";position:absolute;left:-6px;top:11px;width:10px;height:10px;border-radius:50%;background:var(--indigo);box-shadow:0 0 0 3px var(--panel)}
+.tl .ty{font-size:12px;font-weight:800;color:var(--navy)}.tl small{display:block;color:var(--muted);font-size:12px}
+@media (max-width:1050px){.tlayout{grid-template-columns:1fr}.tside{position:static;max-height:none}.tlist{max-height:330px}}
+@media (max-width:700px){.two2{grid-template-columns:1fr}.tload{grid-template-columns:1fr}.tl li{grid-template-columns:1fr;gap:0}.tdhead{flex-wrap:wrap}}
+@media (prefers-reduced-motion:reduce){.tdetail.swap>*{animation:none!important}}
+
+/* ---------- Google Sheet ---------- */
+.loadingscreen{min-height:100vh;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;color:var(--navy)}
+.spin{width:38px;height:38px;border-radius:50%;border:4px solid rgba(46,49,146,.18);border-top-color:var(--indigo);animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.banner.warnb{background:rgba(245,130,32,.14);border-color:rgba(245,130,32,.5)}
+.nfoot{line-height:1.5}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="application/json" id="state-data">{"v": 1, "courses": [{"kod": "DAT11203", "nama": "Algebra and Calculus", "tahun": 1, "kredit": 3, "n": 9, "grp": 3, "pelajar": [27, 27, 28, 28, 28, 28, 28, 28, 28], "K": 2, "TA": 2, "type": "jsm"}, {"kod": "DAT11503", "nama": "Programming Fundamentals", "tahun": 1, "kredit": 3, "n": 9, "grp": 3, "pelajar": [27, 27, 28, 28, 28, 28, 28, 28, 28], "K": 2, "TA": 2, "type": "teach", "coord": "rafizah"}, {"kod": "DAT10803", "nama": "System Analysis and Design", "tahun": 1, "kredit": 3, "n": 9, "grp": 3, "pelajar": [27, 27, 28, 28, 28, 28, 28, 28, 28], "K": 2, "TA": 2, "type": "teach", "coord": "rosni"}, {"kod": "DAT21603", "nama": "Intelligent User Experience Design", "tahun": 1, "kredit": 3, "n": 9, "grp": 3, "pelajar": [27, 27, 28, 28, 28, 28, 28, 28, 28], "K": 2, "TA": 2, "type": "teach", "coord": "rosfuzah"}, {"kod": "DAT22003", "nama": "Cybersecurity Fundamentals", "tahun": 1, "kredit": 3, "n": 9, "grp": 3, "pelajar": [27, 27, 28, 28, 28, 28, 28, 28, 28], "K": 2, "TA": 2, "type": "teach", "coord": "hanif"}, {"kod": "DAT22503", "nama": "System Paradigms", "tahun": 2, "kredit": 3, "n": 6, "grp": 2, "pelajar": [27, 29, 27, 29, 26, 29], "K": 2, "TA": 2, "type": "teach", "coord": "syarizul"}, {"kod": "DAT22103", "nama": "Cloud Computing", "tahun": 2, "kredit": 3, "n": 6, "grp": 2, "pelajar": [27, 29, 27, 29, 26, 29], "K": 2, "TA": 2, "type": "teach", "coord": "fawwaz"}, {"kod": "DAT22303", "nama": "Advanced Networking", "tahun": 2, "kredit": 3, "n": 6, "grp": 2, "pelajar": [27, 29, 27, 29, 26, 29], "K": 2, "TA": 2, "type": "teach", "coord": "hannes"}, {"kod": "DAT22203", "nama": "Integrated System Technology", "tahun": 2, "kredit": 3, "n": 6, "grp": 2, "pelajar": [27, 29, 27, 29, 26, 29], "K": 2, "TA": 2, "type": "teach", "coord": "bakhreza"}, {"kod": "DAT22104", "nama": "Diploma Project 2", "tahun": 2, "kredit": 4, "n": 1, "grp": 1, "pelajar": [167], "K": 0, "TA": 4, "type": "dp", "coord": "hazwani"}], "lecturers": [{"id": "halim", "name": "En. Abdul Halim Bin Omar", "short": "En. Abdul Halim", "type": "staf", "lampiran": ["DAT22303", "DAT22103"], "sem1": true, "target": null, "indep": true, "note": "", "gel": "En."}, {"id": "amirah", "name": "Pn. Amirah Barieah Binti Amran", "short": "Pn. Amirah", "type": "staf", "lampiran": ["DAT22503", "DAT21603"], "sem1": true, "target": null, "indep": false, "note": "", "gel": "Pn."}, {"id": "bakhreza", "name": "Ts. Bakhreza Binti A Talip", "short": "Ts. Bakhreza", "type": "staf", "lampiran": ["DAT22203", "DAT21603", "DAT10803"], "sem1": false, "target": null, "indep": false, "note": "", "gel": "Ts."}, {"id": "fawwaz", "name": "En. Fawwaz Bin Mohd Nasir", "short": "En. Fawwaz", "type": "staf", "lampiran": ["DAT22103"], "sem1": true, "target": null, "indep": false, "note": "", "gel": "En."}, {"id": "hannes", "name": "En. Hannes Bin Masandig", "short": "En. Hannes", "type": "staf", "lampiran": ["DAT22303"], "sem1": false, "target": null, "indep": false, "note": "", "gel": "En."}, {"id": "hazwani", "name": "Dr. Hazwani Binti Rahmat", "short": "Dr. Hazwani", "type": "staf", "lampiran": ["DAT10803"], "sem1": true, "target": null, "indep": false, "note": "Penyelaras Diploma Project 2", "gel": "Dr."}, {"id": "junita", "name": "Dr. Junita Binti Sulaiman", "short": "Dr. Junita", "type": "staf", "lampiran": ["DAT22003"], "sem1": true, "target": null, "indep": true, "note": "", "gel": "Dr."}, {"id": "mariam", "name": "Pn. Mariam Binti Abdul Hamid", "short": "Pn. Mariam", "type": "staf", "lampiran": ["DAT22503", "DAT11503"], "sem1": false, "target": null, "indep": false, "note": "Kurang sihat", "gel": "Pn."}, {"id": "mazniha", "name": "Ts. Dr. Mazniha Binti Berahim", "short": "Ts. Dr. Mazniha", "type": "staf", "lampiran": ["DAT11503"], "sem1": true, "target": 4, "indep": false, "note": "Timbalan Dekan Akademik", "gel": "Ts. Dr."}, {"id": "hatta", "name": "Ts. Mohd Hatta Bin Mohamed Ali @ Md Hani", "short": "Ts. Hatta", "type": "staf", "lampiran": ["DAT22203"], "sem1": false, "target": null, "indep": true, "note": "", "gel": "Ts."}, {"id": "hanif", "name": "Dr. Muhamad Hanif Bin Jofri", "short": "Dr. Hanif", "type": "staf", "lampiran": ["DAT22303"], "sem1": false, "target": null, "indep": false, "note": "", "gel": "Dr."}, {"id": "noordiana", "name": "Ts. Dr. Noordiana Binti Kassim@Kasim", "short": "Ts. Dr. Noordiana", "type": "staf", "lampiran": ["DAT22003", "DAT22103"], "sem1": true, "target": null, "indep": false, "note": "", "gel": "Ts. Dr."}, {"id": "rafizah", "name": "Ts. Inv. Dr. Rafizah Binti Mohd Hanifa", "short": "Ts. Inv. Dr. Rafizah", "type": "staf", "lampiran": ["DAT11503"], "sem1": false, "target": null, "indep": false, "note": "", "gel": "Ts. Inv. Dr."}, {"id": "rosfuzah", "name": "Dr. Rosfuzah Binti Roslan", "short": "Dr. Rosfuzah", "type": "staf", "lampiran": ["DAT10803", "DAT21603"], "sem1": false, "target": 6, "indep": false, "note": "Ketua Program", "gel": "Dr."}, {"id": "rosni", "name": "Ts. Rosni Binti Ramlee", "short": "Ts. Rosni", "type": "staf", "lampiran": ["DAT10803", "DAT11503"], "sem1": true, "target": null, "indep": false, "note": "", "gel": "Ts."}, {"id": "shelena", "name": "Ts. Inv. Dr. Shelena A/P Soosay Nathan", "short": "Ts. Inv. Dr. Shelena", "type": "staf", "lampiran": [], "sem1": true, "target": null, "indep": false, "note": "", "gel": "Ts. Inv. Dr."}, {"id": "syarizul", "name": "Dr. Syarizul Amri Bin Mohd Dzulkifli", "short": "Dr. Syarizul", "type": "staf", "lampiran": ["DAT22103", "DAT22503", "DAT22203"], "sem1": false, "target": null, "indep": false, "note": "", "gel": "Dr."}, {"id": "s1", "name": "JTM Sambilan 1", "short": "Sambilan 1", "type": "sambilan", "lampiran": [], "sem1": false, "target": null, "indep": false, "note": ""}, {"id": "s2", "name": "JTM Sambilan 2", "short": "Sambilan 2", "type": "sambilan", "lampiran": [], "sem1": false, "target": null, "indep": false, "note": ""}, {"id": "wan", "name": "Cik Wan Nur Syamilah binti Wan Ali", "short": "Cik Wan Syamilah", "type": "sambilan", "lampiran": [], "sem1": false, "target": null, "indep": false, "note": "", "gel": "Cik"}], "assign": {"DAT11503": {"K": ["s1", "mazniha", "rafizah"], "A": ["s1", "s1", "s1", "s1", "s1", "mazniha", "rafizah", "rafizah", "rafizah"]}, "DAT10803": {"K": ["hazwani", "hatta", "rosni"], "A": ["hazwani", "hazwani", "hazwani", "hatta", "hatta", "hatta", "rosni", "rosni", "rosni"]}, "DAT21603": {"K": ["s2", "amirah", "rosfuzah"], "A": ["s2", "s2", "s2", "amirah", "amirah", "amirah", "amirah", "rosfuzah", "rosfuzah"]}, "DAT22003": {"K": ["junita", "halim", "hanif"], "A": ["junita", "junita", "junita", "halim", "halim", "halim", "hanif", "hanif", "hanif"]}, "DAT22503": {"K": ["syarizul", "mariam", "mariam"], "A": ["syarizul", "syarizul", "syarizul", "mariam", "mariam", "mariam"]}, "DAT22103": {"K": ["noordiana", "noordiana", "fawwaz"], "A": ["noordiana", "noordiana", "noordiana", "fawwaz", "fawwaz", "fawwaz"]}, "DAT22303": {"K": ["wan", "wan", "hannes"], "A": ["wan", "wan", "wan", "hannes", "hannes", "hannes"]}, "DAT22203": {"K": ["bakhreza", "shelena", "shelena"], "A": ["bakhreza", "bakhreza", "bakhreza", "shelena", "shelena", "shelena"]}}, "pairs": [["halim", "noordiana"], ["halim", "rafizah"], ["hanif", "noordiana"], ["hanif", "rafizah"]], "set": {"staffCourses": 1, "sambilanCourses": 2, "sambilanMax": 12, "kuliahMin": 1, "kuliahMax": 2, "target": 10, "coordTarget": 8}}</script>
+<script id="app">(function () {
+'use strict';
+const HEAD_HTML = "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>Agihan Kursus DAT<\/title>\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;600;700;800&display=swap\">\n";
+const STAFF = [{"id":"fawwaz","no":1,"nama":"En. Fawwaz bin Mohd Nasir","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Database","kod":"DAT20103","tahun":2,"sem":"1"},{"nama":"Computer Architecture","kod":"DAT10703","tahun":1,"sem":"1"},{"nama":"Cloud Computing","kod":"DAT22103","tahun":2,"sem":"2"}],"kelayakan":[{"q":"Sarjana Falsafah (Sains Komputer) / 2017","inst":"UTM"},{"q":"Ijazah Sarjana Muda Sains Komputer (Perisian Grafik dan Multimedia) / 2014","inst":"UTM"}],"penyelidikan":["Modelling and Simulation Techniques – Crowd Simulation"],"pengalaman":[{"jawatan":"Pembantu Pengajar","majikan":"UTM","tahun":"Feb 2015- Jun 2015"},{"jawatan":"Pembantu Pengajar","majikan":"UTM","tahun":"Sep 2015- Jan 2016"},{"jawatan":"Pentadbir Laman Web","majikan":"MaGICX, UTM","tahun":"Feb 2015- Okt 2016"},{"jawatan":"Pensyarah Sambilan","majikan":"UTHM","tahun":"Feb 2018- Jun 2018"},{"jawatan":"Pensyarah","majikan":"UTHM","tahun":"2018-Kini"}],"semak":false,"mat":false},{"id":"hazwani","no":2,"nama":"Dr. Hazwani binti Rahmat","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"System Analysis and Design","kod":"DAT10803","tahun":1,"sem":"2"},{"nama":"Web Development","kod":"DAT21303","tahun":2,"sem":"1"},{"nama":"Object Oriented Programming Languages","kod":"DAT21803","tahun":2,"sem":"1"}],"kelayakan":[{"q":"Doktor Falsafah Kejuruteraan Perisian, 2021","inst":"UPM"},{"q":"Sarjana Sains Komputer, 2012","inst":"UPM"},{"q":"Sarjana Muda Teknologi Maklumat, 2006","inst":"UTHM"},{"q":"Diploma Teknologi Maklumat, 2004","inst":"UTHM"}],"penyelidikan":["Software Evaluation","Usability","Artificial Intelligent"],"pengalaman":[{"jawatan":"Customer Care Officer","majikan":"Singapore Telecommunications Ltd","tahun":"2006 – 2007"},{"jawatan":"Assistant IT Officer","majikan":"CARE, UTHM","tahun":"2007 – 2009"},{"jawatan":"Research Assistant","majikan":"FSKTM, UTHM & FSKTM, UPM","tahun":"2009, 2017"},{"jawatan":"Tutor","majikan":"FSKTM, UTHM","tahun":"2009 - 2019"}],"semak":false,"mat":false},{"id":"rafizah","no":3,"nama":"Ts. Inv. Dr. Rafizah binti Mohd Hanifa","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Programming Fundamentals","kod":"DAT11503","tahun":1,"sem":"2"},{"nama":"Database","kod":"DAT20103","tahun":2,"sem":"1"},{"nama":"Object Oriented Programming Languages","kod":"DAT21803","tahun":2,"sem":"1"}],"kelayakan":[{"q":"Doktor Falsafah Kejuruteraan Elektrik","inst":"UTHM"},{"q":"MSc (IT)","inst":"UUM"},{"q":"B. Computer Science (Hons)","inst":"USM"}],"penyelidikan":["Kecerdasan Buatan","Speech Recognition","Signal Processing"],"pengalaman":[{"jawatan":"Pensyarah","majikan":"Pusat Matrikulasi ITTAR (Langkawi)","tahun":"1/6/1999 – 31/10/1999"},{"jawatan":"Pensyarah","majikan":"Kolej Tunku Abdul Rahman","tahun":"1/5/2001 – 30/9/2004"},{"jawatan":"Koordinator Akademik","majikan":"In-Fusion Solution","tahun":"1/10/2004 – 30/11/2010"},{"jawatan":"Pensyarah","majikan":"UTHM","tahun":"1/12/2010 – kini"},{"jawatan":"Tutor Sambilan","majikan":"OUM","tahun":"2010 – kini"}],"semak":false,"mat":false},{"id":"noordiana","no":4,"nama":"Ts. Dr. Noordiana binti Kassim @ Kasim","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Cybersecurity Fundamentals","kod":"DAT22003","tahun":1,"sem":"2"},{"nama":"Cloud Computing","kod":"DAT22103","tahun":2,"sem":"2"},{"nama":"Operating Systems","kod":"DAT10903","tahun":1,"sem":"1"}],"kelayakan":[{"q":"Doktor Falsafah Kejuruteraan Mekanikal","inst":"UTHM"},{"q":"Sarjana Kejuruteraan Mekanikal","inst":"UTHM"},{"q":"Sarjana Muda Pengurusan Maklumat","inst":"UiTM"}],"penyelidikan":["STEP NC, Computer Integrated / Aided Manufacturing"],"pengalaman":[{"jawatan":"Analyst Programmer","majikan":"Rank Alpha Technologies Sdn Bhd","tahun":"2000"},{"jawatan":"MIS Engineer","majikan":"Sharp-Roxy Electronics Corporation","tahun":"2001 – 2009"},{"jawatan":"Pensyarah Sambilan","majikan":"UTHM","tahun":"2011 – 2011"},{"jawatan":"Pensyarah","majikan":"UTHM","tahun":"2011 – kini"}],"semak":false,"mat":false},{"id":"hannes","no":5,"nama":"En. Hannes bin Masandig","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Network and Data Communication","kod":"DAT11003","tahun":1,"sem":"1"},{"nama":"Advanced Networking","kod":"DAT22303","tahun":2,"sem":"2"},{"nama":"Web Development","kod":"DAT21303","tahun":2,"sem":"1"}],"kelayakan":[{"q":"Sarjana Teknologi Maklumat/ 2000","inst":"UiTM"},{"q":"Diploma Lanjutan Kejuruteraan Mekanikal/ 1995","inst":"ITM"},{"q":"Diploma Kejuruteraan Mekanikal/ 1994","inst":"UTM"}],"penyelidikan":["Networking"],"pengalaman":[{"jawatan":"Production Supervisor","majikan":"SHARP Corporation","tahun":"1990-1992"},{"jawatan":"Production Engineer","majikan":"AIWA Corporation","tahun":"1995-1996"},{"jawatan":"QA Engineer","majikan":"SHARP Corporation","tahun":"1996-1999"},{"jawatan":"Pensyarah","majikan":"Kolej Teknologi Mulia","tahun":"2000-2001"},{"jawatan":"Pensyarah Universiti","majikan":"UTHM","tahun":"2001 – kini"}],"semak":false,"mat":false},{"id":"mariam","no":6,"nama":"Pn. Mariam binti Abdul Hamid","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"System Paradigms","kod":"DAT22503","tahun":2,"sem":"2"},{"nama":"Database","kod":"DAT20103","tahun":2,"sem":"1"},{"nama":"Programming Fundamentals","kod":"DAT11503","tahun":1,"sem":"2"}],"kelayakan":[{"q":"Sarjana Sains Teknologi Maklumat","inst":"UTM"},{"q":"Sarjana Muda Sains Teknologi Maklumat","inst":"UiTM"}],"penyelidikan":["Pengurusan Sistem Maklumat"],"pengalaman":[{"jawatan":"RA","majikan":"UTHM","tahun":"2008 - 2010"},{"jawatan":"Tutor","majikan":"UTHM","tahun":"2011-2012"},{"jawatan":"Pensyarah","majikan":"UTHM","tahun":"2013-Kini"},{"jawatan":"Pensyarah","majikan":"Kolej Komuniti Jasin","tahun":"2004-2010"},{"jawatan":"Pensyarah","majikan":"UTHM","tahun":"2011-kini"}],"semak":false,"mat":false},{"id":"rosfuzah","no":7,"nama":"Dr. Rosfuzah binti Roslan","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"System Analysis and Design","kod":"DAT10803","tahun":1,"sem":"2"},{"nama":"Intelligent User Experience Design","kod":"DAT21603","tahun":1,"sem":"2"},{"nama":"Database","kod":"DAT20103","tahun":2,"sem":"1"}],"kelayakan":[{"q":"Doktor Falsafah Teknologi Pendidikan","inst":"UPM"},{"q":"Sarjana Sains Komputer","inst":"UTM"},{"q":"Ijazah Sarjana Muda Sains Komputer","inst":"UTM"},{"q":"Diploma Sains Komputer (IT)","inst":"UTM"}],"penyelidikan":["Kejuruteraan Perisian","Bioinformatics","Gamification","Educational Technology"],"pengalaman":[{"jawatan":"Pegawai Teknologi Maklumat (F41)","majikan":"Bahagian Pengurusan Maklumat (BPM), Kementerian Pendidikan Malaysia (KPM)","tahun":"2009-2013"},{"jawatan":"Pensyarah (DS45)","majikan":"UTHM","tahun":"2013 - kini"}],"semak":false,"mat":false},{"id":"hatta","no":8,"nama":"Ts. Mohd Hatta bin Mohamed Ali @ Md Hani","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Integrated System Technology","kod":"DAT22203","tahun":2,"sem":"2"},{"nama":"Web Development","kod":"DAT21303","tahun":2,"sem":"1"},{"nama":"Technopreneurship","kod":"DAT22603","tahun":2,"sem":"1"}],"kelayakan":[{"q":"Sarjana Sains (Teknologi Maklumat)/ 2012","inst":"UiTM"},{"q":"Sarjana Muda Sains Komputer/ 2003","inst":"UPM"},{"q":"Diploma Sains Komputer/ 2000","inst":"UPM"}],"penyelidikan":["Management Information System (MIS)","Web / Mobile Application","ICT for Education"],"pengalaman":[{"jawatan":"System engineer","majikan":"Sapura holdings","tahun":"2003 –2004"},{"jawatan":"Pegawai teknologi maklumat","majikan":"UPSI","tahun":"2004 (Jan - Nov)"},{"jawatan":"Pegawai teknologi maklumat","majikan":"UTHM","tahun":"2004 (Nov)"},{"jawatan":"Pensyarah sambilan","majikan":"UTHM","tahun":"2010 –2015"},{"jawatan":"Pensyarah","majikan":"UTHM","tahun":"2015 - kini"}],"semak":false,"mat":false},{"id":"mazniha","no":9,"nama":"Ts. Dr. Mazniha binti Berahim","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Computer Architecture","kod":"DAT10703","tahun":1,"sem":"1"},{"nama":"Programming Fundamentals","kod":"DAT11503","tahun":1,"sem":"2"},{"nama":"Object Oriented Programming Languages","kod":"DAT21803","tahun":2,"sem":"1"}],"kelayakan":[{"q":"Doktor Falsafah Teknologi Maklumat (2023)","inst":"UTHM"},{"q":"Sarjana Pendidikan (Matematik) (2008)","inst":"UTM"},{"q":"Ijazah Sarjana Muda Sains (Komputer) (2006)","inst":"UTM"},{"q":"Diploma Sains Komputer (Teknologi Maklumat) (2002)","inst":"UTM"}],"penyelidikan":["Image Classification (sekarang)","Problem Solving Skill in Mathematics"],"pengalaman":[{"jawatan":"Pembantu Penyelidik","majikan":"UTM","tahun":"2004-2005"},{"jawatan":"Pensyarah Sambilan","majikan":"Institut Teknologi YPJ","tahun":"2006"},{"jawatan":"Guru Sambilan","majikan":"SMK Taman Sutera, Johor Bahru, Johor.","tahun":"2008"},{"jawatan":"Pembantu Penyelidik","majikan":"UTM","tahun":"2008-2009"},{"jawatan":"Pensyarah","majikan":"Institut Teknologi YPJ","tahun":"2009-2011"},{"jawatan":"Tutor Sambilan","majikan":"OUM","tahun":"2009-2010"},{"jawatan":"Pensyarah","majikan":"Politeknik Muadzam Shah, Pahang","tahun":"2011-2015"},{"jawatan":"Pensyarah","majikan":"UTHM","tahun":"2015 – kini"}],"semak":false,"mat":false},{"id":"rosni","no":10,"nama":"Ts. Rosni binti Ramle","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"System Analysis and Design","kod":"DAT10803","tahun":1,"sem":"2"},{"nama":"Object Oriented Programming Languages","kod":"DAT21803","tahun":2,"sem":"1"},{"nama":"Programming Fundamentals","kod":"DAT11503","tahun":1,"sem":"2"}],"kelayakan":[{"q":"Sarjana Sains (Teknologi Maklumat)/ 2012","inst":"UiTM"},{"q":"Ijazah Sarjana Muda Sains Perkomputeran Perniagaan/ 2010","inst":"UiTM"}],"penyelidikan":["Media sosial","Pembangunan sistem"],"pengalaman":[{"jawatan":"Pensyarah sambilan","majikan":"UiTM","tahun":"2012 – 2015"},{"jawatan":"Pensyarah","majikan":"UTHM","tahun":"2015 - kini"}],"semak":false,"mat":false},{"id":"shelena","no":11,"nama":"Ts. Inv. Dr. Shelena a/p Soosay Nathan","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Computer Architecture","kod":"DAT10703","tahun":1,"sem":"1"},{"nama":"Operating Systems","kod":"DAT10903","tahun":1,"sem":"1"},{"nama":"Mobile Application","kod":"DAT21503","tahun":2,"sem":"1"}],"kelayakan":[{"q":"Doktor Falsafah Teknologi Maklumat / 2018","inst":"UUM"},{"q":"Sarjana Teknologi Maklumat/ 2012","inst":"UUM"},{"q":"Ijazah Sarjana Muda Sains (Teknologi Maklumat)/ 2014","inst":"UUM"}],"penyelidikan":["Mobile Usability"],"pengalaman":[{"jawatan":"Pensyarah","majikan":"UTHM","tahun":"2015 - kini"}],"semak":false,"mat":false},{"id":"halim","no":12,"nama":"En. Abdul Halim bin Omar","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Advanced Networking","kod":"DAT22303","tahun":2,"sem":"2"},{"nama":"Web Development","kod":"DAT21303","tahun":2,"sem":"1"},{"nama":"Cloud Computing","kod":"DAT22103","tahun":2,"sem":"2"}],"kelayakan":[{"q":"Sarjana Teknologi Maklumat (Perlombongan Data) (2015)","inst":"UTHM"},{"q":"Sarjana Muda Teknologi Maklumat (Rangkaian) (2011)","inst":"UTHM"},{"q":"Diploma Teknologi Maklumat (2006)","inst":"UNISZA"}],"penyelidikan":["Data Mining"],"pengalaman":[{"jawatan":"Pengaturcara","majikan":"ASR Webmatic Sdn Bhd","tahun":"2007-2008"},{"jawatan":"Pembantu Penyelidik","majikan":"UTHM (FSKTM)","tahun":"2011-2013"},{"jawatan":"Lab Instructor (Sambilan)","majikan":"Kolej Polytech Mara (KPTM)","tahun":"2012"},{"jawatan":"Pensyarah Sambilan","majikan":"Creative Century Sdn Bhd","tahun":"2013"},{"jawatan":"Pengurus Pusat Internet 1 Malaysia","majikan":"UTHM (FSKTM)","tahun":"2014-2016"},{"jawatan":"Pembantu Pensyarah","majikan":"UTHM (FSKTM)","tahun":"2014-2015"},{"jawatan":"Lab Instructor (Sambilan)","majikan":"UTHM","tahun":"2014-2015"},{"jawatan":"Pensyarah","majikan":"UTHM","tahun":"2016-Kini"}],"semak":false,"mat":false},{"id":"syarizul","no":13,"nama":"Dr. Syarizul Amri bin Mohd Dzulkifli","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Cloud Computing","kod":"DAT22103","tahun":2,"sem":"2"},{"nama":"System Paradigms","kod":"DAT22503","tahun":2,"sem":"2"},{"nama":"Integrated System Technology","kod":"DAT22203","tahun":2,"sem":"2"}],"kelayakan":[{"q":"2022 – Doktor Falsafah Teknologi Maklumat","inst":"UTHM"},{"q":"2007 – Sarjana Sains (Teknologi Maklumat – Pengurusan)","inst":"UTM"},{"q":"2004 – Sarjana Muda Sains (Komputer)","inst":"UTM"}],"penyelidikan":["Machine learning"],"pengalaman":[{"jawatan":"Koordinator Projek","majikan":"Auspac Corporation Sdn. Bhd.","tahun":"2006 – 2007"},{"jawatan":"Pembantu Penyelidik","majikan":"UTHM","tahun":"2007 – 2009"},{"jawatan":"Pensyarah (Sambilan)","majikan":"UTHM","tahun":"2007 – 2009"},{"jawatan":"Pensyarah (Kontrak)","majikan":"UTHM","tahun":"2011 – 2015"},{"jawatan":"Pensyarah","majikan":"UTHM","tahun":"2022 – kini"}],"semak":false,"mat":false},{"id":"junita","no":14,"nama":"Dr. Junita binti Sulaiman","status":"Contract","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Mobile Application","kod":"DAT21503","tahun":2,"sem":"1"},{"nama":"Network and Data Communication","kod":"DAT11003","tahun":1,"sem":"1"},{"nama":"Cybersecurity Fundamentals","kod":"DAT22003","tahun":1,"sem":"2"}],"kelayakan":[{"q":"Doktor Falsafah Pendidikan Teknikal dan Vokasional","inst":"UTHM"},{"q":"Sarjana Pendidikan Teknik & Vokasional","inst":"UTHM"},{"q":"Ijazah Sarjana Muda Sains Komputer (Pembangunan Perisian)","inst":"UTEM"},{"q":"Diploma Teknologi Maklumat","inst":"POLITEKNIK"}],"penyelidikan":["INFORMATION TECHNOLOGY","INFORMATION TECHNOLOGY IN TVET EDUCATION"],"pengalaman":[{"jawatan":"Tutor Assistant","majikan":"UTHM","tahun":"2017-2019"},{"jawatan":"Research Assistant","majikan":"UTHM","tahun":"2016-2025"},{"jawatan":"Part Time Lecturer","majikan":"UTHM","tahun":"2021-2025"},{"jawatan":"Educator/Tutor in Education Centre","majikan":"PROSPEED","tahun":"2022-2025"},{"jawatan":"Lecturer","majikan":"UTHM","tahun":"2025-current"}],"semak":false,"mat":false},{"id":"bakhreza","no":15,"nama":"Ts. Bakhreza binti A. Talip","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Integrated System Technology","kod":"DAT22203","tahun":2,"sem":"2"},{"nama":"Intelligent User Experience Design","kod":"DAT21603","tahun":1,"sem":"2"},{"nama":"System Analysis and Design","kod":"DAT10803","tahun":1,"sem":"2"}],"kelayakan":[{"q":"Master of Interaction Design","inst":"University of Queensland, Australia"},{"q":"Postgraduate Diploma in Teaching","inst":"Open University Malaysia"},{"q":"Sarjana Muda Sains (Sains Komputer)","inst":"Universiti Teknologi Malaysia"},{"q":"Sijil Kemahiran Malaysia (SKM Tahap 3), Sokongan Animasi 2D","inst":"ASWARA"}],"penyelidikan":["Information System","Interaction Design"],"pengalaman":[{"jawatan":"Pensyarah (Tetap)","majikan":"UTHM","tahun":"2024- kini"},{"jawatan":"Pensyarah (Kontrak)","majikan":"UTHM","tahun":"2022 - 2024"},{"jawatan":"Pensyarah (Sambilan)","majikan":"UTHM","tahun":"2020 - 2021"},{"jawatan":"ICT Teacher (Contract)","majikan":"Destiny International School","tahun":"2019 – 2021"},{"jawatan":"Pensyarah (Sambilan)","majikan":"UPSI","tahun":"2019"},{"jawatan":"Pensyarah (Sementara)","majikan":"UPSI","tahun":"2016 – 2019"},{"jawatan":"Tutor (Sementara)","majikan":"UPSI","tahun":"2006 - 2015"}],"semak":false,"mat":false},{"id":"hanif","no":16,"nama":"Dr. Muhamad Hanif bin Jofri","status":"Full-time","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Advanced Networking","kod":"DAT22303","tahun":2,"sem":"2"},{"nama":"Operating Systems","kod":"DAT10903","tahun":1,"sem":"1"},{"nama":"Network and Data Communication","kod":"DAT11003","tahun":1,"sem":"1"}],"kelayakan":[{"q":"DOKTOR FALSAFAH TEKNOLOGI MAKLUMAT","inst":"UTHM"},{"q":"SARJANA TEKNOLOGI MAKLUMAT","inst":"UTHM"},{"q":"SARJANA MUDA TEKNOLOGI MAKLUMAT","inst":"UTHM"}],"penyelidikan":["Information and Communication Services"],"pengalaman":[{"jawatan":"Technician","majikan":"Texcor Computer","tahun":"2005-2006"},{"jawatan":"Pensyarah Kontrak","majikan":"KUTech Edu","tahun":"2011"},{"jawatan":"Pensyarah Sambilan","majikan":"KPTM","tahun":"2012"},{"jawatan":"Pensyarah Kontrak","majikan":"KPTM","tahun":"2012-2014"},{"jawatan":"Pensyarah Sambilan","majikan":"UTHM","tahun":"2014-2015"},{"jawatan":"Pensyarah (Tetap)","majikan":"UTHM","tahun":"2016-Kini"}],"semak":false,"mat":false},{"id":"amirah","no":17,"nama":"Pn. Amirah Barieah binti Amran","status":"Contract","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Technopreneurship","kod":"DAT22603","tahun":2,"sem":"1"},{"nama":"System Paradigms","kod":"DAT22503","tahun":2,"sem":"2"},{"nama":"Intelligent User Experience Design","kod":"DAT21603","tahun":1,"sem":"2"}],"kelayakan":[{"q":"Sarjana Pendidikan Teknikal dan Vokasional","inst":"UTM"},{"q":"Ijazah Sarjana Muda Sains Komputer (Interaktif Media)","inst":"UTEM"},{"q":"Kolej Matrikulasi (Program Sains Teknologi)","inst":"Matrikulasi Melaka"}],"penyelidikan":["ICT","Technology for Special need kids"],"pengalaman":[{"jawatan":"Lecturer","majikan":"UTHM","tahun":"18 Ogos 2025 – Kini"},{"jawatan":"Home Tutor","majikan":"Home Tutor Cerdik JB","tahun":"Nov 2024 - Ogos 2025"},{"jawatan":"Digital Marketer","majikan":"Samurai Paint Malaysia","tahun":"12 Ogos 2024 - 1 Ogos 2025"}],"semak":false,"mat":false},{"id":"mizani","no":18,"nama":"Pn. Mizani binti Mohamad Madon","status":"Contract","kursus":[{"nama":"Ethics and Safety in Computing","kod":"DAT10003","tahun":1,"sem":"Khas"},{"nama":"Mobile Application","kod":"DAT21503","tahun":2,"sem":"1"},{"nama":"Cybersecurity Fundamentals","kod":"DAT22003","tahun":1,"sem":"2"},{"nama":"Network and Data Communication","kod":"DAT11003","tahun":1,"sem":"1"}],"kelayakan":[{"q":"Master of Computer Science (Software Engineering)","inst":"UTHM"},{"q":"Bachelor of Computer Science (Software Engineering) with Honours","inst":"UTHM"},{"q":"Kolej Matrikulasi Johor (Program Sains Fizikal)","inst":"KMJ, Tangkak"}],"penyelidikan":["Neural Network","System"],"pengalaman":[{"jawatan":"Lecturer","majikan":"UTHM","tahun":"2024 – Current"},{"jawatan":"Lecturer (Part Time-Full Time)","majikan":"Melaka International College of Science and Technology","tahun":"2023-2024"},{"jawatan":"Pembantu Sambilan","majikan":"PKKA, UTHM","tahun":"2022-2023"}],"semak":false,"mat":false},{"id":"wan","no":0,"nama":"Cik Wan Nur Syamilah binti Wan Ali","status":"Sambilan","semak":false,"mat":false,"kursus":[],"ringkas":"Penyelidik dan pendidik dalam kecerdasan buatan, pengoptimuman, perlombongan data dan rangkaian komputer. Calon PhD di UKM; tesis telah siap ditulis dan menunggu kelulusan pentadbiran untuk dihantar.","sumber":"CV pensyarah (Mei 2026)","kelayakan":[{"q":"Calon Doktor Falsafah (PhD), Kecerdasan Buatan dan Pengoptimuman (2021 – kini)","inst":"Universiti Kebangsaan Malaysia (UKM)"},{"q":"Master of Informatics (MSc) (2018 – 2020)","inst":"Universiti Sains Malaysia (USM)"},{"q":"Bachelor of Computer Science (Hons.), Computer Networks (2021 – 2026)","inst":"Universiti Teknologi MARA (UiTM)"},{"q":"Bachelor of Science with Honours, Physics with Electronics (2013 – 2016)","inst":"Universiti Malaysia Sabah (UMS)"}],"penyelidikan":["Artificial Intelligence & Machine Learning","Combinatorial Optimization","Data Mining","Computer Networks","IoT Systems"],"mengajar":["Rangkaian komputer dan asas rangkaian","Internet of Things (IoT)","Asas pengaturcaraan (Python, PHP, HTML/CSS)","Sistem pangkalan data dan pembangunan web","Kecerdasan buatan dan pembelajaran mesin","Komunikasi data dan sistem maklumat","Metodologi penyelidikan"],"pengalaman":[{"jawatan":"IT Intern, System Developer","majikan":"Gagasan Consultant, Kuantan","tahun":"Sep – Dis 2025"},{"jawatan":"Graduate Research Assistant (GRA)","majikan":"Universiti Kebangsaan Malaysia (UKM)","tahun":"2021 – 2024"},{"jawatan":"Research Assistant (RA), Data Mining","majikan":"Universiti Kebangsaan Malaysia (UKM)","tahun":"2020 – 2021"},{"jawatan":"Guru Sekolah Rendah (Sains dan Matematik)","majikan":"Sekolah Rendah Islam Ibnu Abbas, Kuantan","tahun":"2017 – 2018"}]}];
+const DEFAULTS = JSON.parse(document.getElementById('state-data').textContent);
+let state = JSON.parse(JSON.stringify(DEFAULTS));
+let savedStr = JSON.stringify(DEFAULTS);
+const hist = [], fut = [];
+const ui = { enter: true, prev: {}, tab: 'ringkasan', tsel: '', tq: '', tf: 'all', cfilter: 'T1', addOpen: true, brush: null, filter: 'all', q: '', sort: 'nama', pop: null, tsort: 'jam', tdir: -1, saving: false, painting: false, canSave: true, canDl: true };
+const root = document.getElementById('root');
+const SHEET = !!(typeof google !== 'undefined' && google.script && google.script.run);
+const STANDALONE = !SHEET && (typeof claude === 'undefined' || !claude.use);
+const gs = (fn, ...a) => new Promise((ok, no) => { try { google.script.run.withSuccessHandler(ok).withFailureHandler(e => no(e))[fn](...a); } catch (e) { no(e); } });
+let sheetRev = 0, sheetInfo = null, sheetUser = '';
+const DRAFT_KEY = 'dat-agihan-sem2-draft';
+let toastTimer = null;
+
+/* ---------- utiliti ---------- */
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const fmt = n => (Math.round(n * 10) / 10).toString().replace('.', ',');
+const lmapOf = st => { const m = {}; st.lecturers.forEach(l => { m[l.id] = l; }); return m; };
+const teaching = st => st.courses.filter(c => c.type === 'teach');
+const ngOf = c => Math.ceil(c.n / c.grp);
+const cmap = st => { const m = {}; st.courses.forEach(c => { m[c.kod] = c; }); return m; };
+function hues(st) {
+  const m = {}; let si = 0, bi = 0; const green = [96, 128, 152, 112, 140, 168];
+  st.lecturers.forEach(l => {
+    if (l.type === 'sambilan') { m[l.id] = green[bi++ % green.length]; }
+    else { const x = (si++ * 0.618034) % 1; m[l.id] = Math.round(((0.48 + x * 0.70) % 1) * 360); }
+  });
+  return m;
+}
+
+/* ---------- pengiraan ---------- */
+function compute(st) {
+  const per = {}, issues = [], coordOf = {}; let unfilled = 0, units = 0;
+  const L = lmapOf(st), C = cmap(st);
+  st.lecturers.forEach(l => { per[l.id] = { l, kh: 0, ah: 0, kg: 0, as: 0, courses: {}, cover: {} }; });
+  st.courses.forEach(c => { if ((c.type === 'teach' || c.type === 'dp') && c.coord) (coordOf[c.coord] = coordOf[c.coord] || []).push(c.kod); });
+  const unfilledBy = {};
+  teaching(st).forEach(c => {
+    const a = st.assign[c.kod], ng = ngOf(c);
+    for (let g = 0; g < ng; g++) {
+      units++; const id = a.K[g];
+      if (!id || !per[id]) { unfilled++; unfilledBy[c.kod] = (unfilledBy[c.kod] || 0) + 1; continue; }
+      const o = per[id]; o.kg++; o.kh += c.K;
+      const cc = o.courses[c.kod] = o.courses[c.kod] || { k: 0, a: 0 }; cc.k++;
+      const cv = o.cover[c.kod] = o.cover[c.kod] || {}; for (let s = g * c.grp; s < Math.min(c.n, (g + 1) * c.grp); s++) cv[s] = 1;
+    }
+    for (let s = 0; s < c.n; s++) {
+      units++; const id = a.A[s];
+      if (!id || !per[id]) { unfilled++; unfilledBy[c.kod] = (unfilledBy[c.kod] || 0) + 1; continue; }
+      const o = per[id]; o.as++; o.ah += c.TA;
+      const cc = o.courses[c.kod] = o.courses[c.kod] || { k: 0, a: 0 }; cc.a++;
+      const cv = o.cover[c.kod] = o.cover[c.kod] || {}; cv[s] = 1;
+    }
+  });
+  let total = 0, staffH = 0, samH = 0, samN = 0, atTarget = 0, staffN = 0;
+  st.lecturers.forEach(l => {
+    const o = per[l.id]; o.hours = o.kh + o.ah; o.nc = Object.keys(o.courses).length;
+    if (l.type === 'staf') {
+      o.target = (l.target !== null && l.target !== undefined && l.target !== '') ? Number(l.target) : (coordOf[l.id] ? st.set.coordTarget : st.set.target);
+      o.cap = o.target; staffH += o.hours; staffN++; if (o.hours === o.target) atTarget++;
+    } else { o.target = null; o.cap = st.set.sambilanMax; samH += o.hours; if (o.hours > 0) samN++; }
+    total += o.hours;
+    o.status = l.type === 'staf' ? (o.hours > o.target ? 'bad' : (o.hours === o.target ? 'good' : 'warn')) : (o.hours > o.cap ? 'bad' : 'plain');
+  });
+  /* semakan */
+  Object.keys(unfilledBy).forEach(k => issues.push({ sev: 'bad', msg: k + ' ' + C[k].nama + ': ' + unfilledBy[k] + ' unit belum diisi (kuliah atau seksyen amali)', c: k }));
+  st.lecturers.forEach(l => {
+    const o = per[l.id], nm = l.short;
+    const maxC = l.type === 'staf' ? st.set.staffCourses : st.set.sambilanCourses;
+    if (o.nc > maxC) issues.push({ sev: 'bad', msg: nm + ' mengajar ' + o.nc + ' kursus (maksimum ' + maxC + ')', l: l.id });
+    if (l.type === 'staf') {
+      if (o.hours > o.target) issues.push({ sev: 'bad', msg: nm + ' melebihi sasaran: ' + o.hours + ' jam (sasaran ' + o.target + ')', l: l.id });
+      else if (o.hours < o.target) {
+        const d = o.target - o.hours;
+        issues.push(l.indep ? { sev: 'info', msg: nm + ' kurang ' + d + ' jam daripada sasaran; disasar untuk kursus independent', l: l.id }
+                            : { sev: 'warn', msg: nm + ' kurang ' + d + ' jam daripada sasaran (' + o.hours + ' / ' + o.target + ')', l: l.id });
+      }
+      if (o.hours > 0 && (o.kg < st.set.kuliahMin || o.kg > st.set.kuliahMax)) issues.push({ sev: 'warn', msg: nm + ' ada ' + o.kg + ' kumpulan kuliah (patut ' + st.set.kuliahMin + ' hingga ' + st.set.kuliahMax + ')', l: l.id });
+      Object.keys(o.courses).forEach(k => { if (l.lampiran.indexOf(k) < 0) issues.push({ sev: 'info', msg: nm + ' dalam ' + k + ' ' + C[k].nama + ' di luar lampiran kepakaran', l: l.id, c: k }); });
+    } else {
+      if (o.hours > o.cap) issues.push({ sev: 'bad', msg: nm + ' (sambilan) ' + o.hours + ' jam, melebihi had ' + o.cap + ' jam', l: l.id });
+      if (o.kg > st.set.kuliahMax) issues.push({ sev: 'warn', msg: nm + ' (sambilan) ada ' + o.kg + ' kumpulan kuliah', l: l.id });
+    }
+    Object.keys(o.cover).forEach(k => {
+      const idx = Object.keys(o.cover[k]).map(Number).sort((a, b) => a - b);
+      if (idx.length > 1 && idx[idx.length - 1] - idx[0] + 1 !== idx.length) issues.push({ sev: 'warn', msg: nm + ': seksyen bertaburan dalam ' + k + ' (' + idx.map(x => x + 1).join(', ') + ')', l: l.id, c: k });
+    });
+  });
+  st.pairs.forEach(p => {
+    const A = per[p[0]], B = per[p[1]]; if (!A || !B) return;
+    Object.keys(A.courses).forEach(k => { if (B.courses[k]) issues.push({ sev: 'bad', msg: L[p[0]].short + ' dan ' + L[p[1]].short + ' dalam kursus yang sama (' + k + ')', c: k }); });
+  });
+  st.courses.forEach(c => {
+    if (c.type !== 'teach' && c.type !== 'dp') return;
+    const co = c.coord, l = L[co];
+    if (!co || !l) { issues.push({ sev: c.indep ? 'info' : 'bad', msg: c.kod + ' ' + c.nama + ' belum ada penyelaras', c: c.kod }); return; }
+    if (l.type !== 'staf') issues.push({ sev: 'bad', msg: 'Penyelaras ' + c.kod + ' mesti pensyarah tetap, bukan sambilan (' + l.short + ')', c: c.kod });
+    if (c.type === 'teach' && !(per[co].courses[c.kod] && per[co].courses[c.kod].k > 0)) issues.push({ sev: 'warn', msg: l.short + ' penyelaras ' + c.kod + ' tetapi tidak mengajar kuliah kursus itu', c: c.kod });
+    if (l.sem1) issues.push({ sev: 'info', msg: l.short + ' penyelaras ' + c.kod + ' sedangkan dia penyelaras dalam Sem 1', c: c.kod });
+    if (coordOf[co].length > 1) issues.push({ sev: 'warn', msg: l.short + ' menyelaras ' + coordOf[co].length + ' kursus (' + coordOf[co].join(', ') + ')', c: c.kod });
+  });
+  const ord = { bad: 0, warn: 1, info: 2 }; issues.sort((a, b) => ord[a.sev] - ord[b.sev]);
+  return { per, issues, coordOf, L, C, unfilled, units, total, staffH, samH, samN, atTarget, staffN };
+}
+
+/* ---------- sejarah, simpan draf ---------- */
+function commit(mut, keep) {
+  if (!keep) { hist.push(JSON.stringify(state)); if (hist.length > 150) hist.shift(); fut.length = 0; }
+  mut(state); persistDraft();
+}
+function undo() { if (!hist.length) return; fut.push(JSON.stringify(state)); state = JSON.parse(hist.pop()); persistDraft(); render(); }
+function redo() { if (!fut.length) return; hist.push(JSON.stringify(state)); state = JSON.parse(fut.pop()); persistDraft(); render(); }
+function isDirty() { return JSON.stringify(state) !== savedStr; }
+function persistDraft() {
+  try {
+    if (isDirty()) localStorage.setItem(DRAFT_KEY, JSON.stringify({ base: savedStr, cur: state }));
+    else localStorage.removeItem(DRAFT_KEY);
+  } catch (e) { /* tiada storan */ }
+}
+function readDraft() {
+  try { const d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); if (d && d.base === savedStr && JSON.stringify(d.cur) !== savedStr) return d.cur; } catch (e) { }
+  return null;
+}
+let draftOffer = readDraft();
+
+/* ---------- toast ---------- */
+function toast(msg) {
+  let t = document.getElementById('toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+  t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 4200);
+}
+
+/* ---------- paparan ---------- */
+let M = null; // hasil pengiraan semasa
+let HU = {};
+function barHTML(o) {
+  const scale = Math.max(o.cap, o.hours, 12, o.target || 0) * 1.0;
+  const w = Math.min(100, (o.hours / scale) * 100), tp = Math.min(100, ((o.target != null ? o.target : o.cap) / scale) * 100);
+  return '<div class="bar ' + (o.status === 'plain' ? '' : o.status) + '"><i style="width:' + w + '%"></i><u style="left:' + tp + '%"></u></div>';
+}
+function lrowHTML(l) {
+  const o = M.per[l.id], co = M.coordOf[l.id];
+  const subs = Object.keys(o.courses).map(k => k + (o.courses[k].k ? ' · ' + o.courses[k].k + 'K' : '') + (o.courses[k].a ? ' · ' + o.courses[k].a + 'A' : ''));
+  const tags = [l.type === 'sambilan' ? '<span class="tag sambtag">SAMBILAN</span>' : '<span class="tag tetap">Tetap</span>'];
+  if (co) tags.push('<span class="tag star" title="Penyelaras ' + esc(co.join(', ')) + '">Penyelaras</span>');
+  if (l.sem1) tags.push('<span class="tag s1" title="Penyelaras dalam Sem 1">Sem 1 ★</span>');
+  if (l.note) tags.push('<span class="tag warn">' + esc(l.note) + '</span>');
+  if (l.indep) tags.push('<span class="tag" title="Baki jam disasar untuk kursus independent">+ independent</span>');
+  const tgt = l.type === 'staf' ? '<small>/ ' + o.target + ' j</small>' : '<small>/ maks ' + o.cap + ' j</small>';
+  return '<div role="button" tabindex="0" draggable="true" class="lrow' + (l.type === 'sambilan' ? ' sam' : '') + '" data-act="brush" data-l="' + l.id + '" data-h="' + l.id + '" aria-pressed="' + (ui.brush === l.id) + '" style="--h:' + HU[l.id] + '">' +
+    '<span class="dot"></span><span class="lname">' + esc(l.short) + ' ' + tags.join(' ') + '</span>' +
+    '<span class="lh ' + (o.status === 'plain' ? '' : o.status) + ' num"><b>' + o.hours + '</b> ' + tgt + '</span>' +
+    '<span class="lsub">' + (subs.length ? esc(subs.join('   ')) : 'belum ada tugasan') + '</span>' + barHTML(o) + '</div>';
+}
+function rowsHTML() {
+  const q = ui.q.trim().toLowerCase();
+  let ls = state.lecturers.filter(l => (ui.filter === 'all' || (ui.filter === 'staf') === (l.type === 'staf')) && (!q || l.name.toLowerCase().indexOf(q) >= 0 || l.short.toLowerCase().indexOf(q) >= 0));
+  const key = { nama: l => sPlain(l.short).toLowerCase(), jam: l => -M.per[l.id].hours, kurang: l => (M.per[l.id].target != null ? M.per[l.id].hours - M.per[l.id].target : 99) };
+  const f = key[ui.sort] || key.nama; ls = ls.slice().sort((a, b) => { const x = f(a), y = f(b); return x < y ? -1 : x > y ? 1 : 0; });
+  return '<button class="lrow" type="button" data-act="brush" data-l="__erase" aria-pressed="' + (ui.brush === '__erase') + '"><span class="dot era"></span><span class="lname">Kosongkan sel</span><span class="lh"></span><span class="lsub">klik di sini, kemudian klik sel untuk kosongkan</span></button>' + (function () { const a = ls.filter(l => l.type === 'staf'), b = ls.filter(l => l.type !== 'staf'); return (a.length ? '<div class="lgrp">Staf tetap JTM <b>' + a.length + '</b></div>' + a.map(lrowHTML).join('') : '') + (b.length ? '<div class="lgrp sam">Pensyarah sambilan <b>' + b.length + '</b></div>' + b.map(lrowHTML).join('') : ''); })();
+}
+function brushInfo() {
+  if (ui.brush === null) return 'Cara cepat: klik nama pensyarah di bawah, kemudian klik atau seret pada sel seksyen untuk tetapkan pensyarah itu. Atau klik terus pada sel untuk pilih daripada senarai.';
+  if (ui.brush === '__erase') return 'Mod kosongkan: klik atau seret pada sel untuk kosongkan. Esc untuk batal.';
+  const l = lmapOf(state)[ui.brush]; return 'Pensyarah dipilih: <b>' + esc(l ? l.name : '') + '</b>. Klik atau seret pada sel seksyen untuk tetapkan. Esc untuk batal.';
+}
+function cellParts(c, kind, i) {
+  const a = state.assign[c.kod], id = kind === 'K' ? a.K[i] : a.A[i], l = id ? lmapOf(state)[id] : null;
+  const cls = ['cell', kind === 'K' ? 'k' : 'a'];
+  let style = '', inner = '';
+  if (kind === 'K') style = 'grid-column:span ' + Math.min(c.grp, c.n - i * c.grp) + ';';
+  if (l) {
+    cls.push('lc'); if (l.type === 'sambilan') cls.push('sam'); style += '--h:' + HU[l.id] + ';'; inner = esc(l.short);
+    if (l.type === 'staf' && l.lampiran.indexOf(c.kod) < 0) cls.push('ex');
+    if (kind === 'K') inner += '<button type="button" class="cp" data-act="cpk" data-c="' + c.kod + '" data-i="' + i + '" title="Beri pensyarah yang sama untuk semua amali kumpulan ini">↓ amali</button>';
+  } else { cls.push('empty'); inner = 'kosong'; }
+  return { cls: cls.join(' '), style, inner, id: id || '' };
+}
+function cellHTML(c, kind, i) {
+  const p = cellParts(c, kind, i);
+  return '<div class="' + p.cls + '" style="' + p.style + '" data-cell="1" data-kind="' + kind + '" data-c="' + c.kod + '" data-i="' + i + '" data-l="' + p.id + '" draggable="' + (p.id ? 'true' : 'false') + '" tabindex="0" role="button" aria-label="' + (kind === 'K' ? 'Kuliah kumpulan ' : 'Amali seksyen ') + (i + 1) + '">' + p.inner + '</div>';
+}
+function courseCard(c) {
+  const ng = ngOf(c);
+  const staf = state.lecturers.filter(l => l.type === 'staf');
+  let h = '<section class="course" id="c-' + c.kod + '" data-c="' + c.kod + '">';
+  h += '<header class="ch"><span class="cid">' + c.kod + '</span><h3>' + esc(c.nama) + '</h3>';
+  if (c.type === 'teach') {
+    const hrs = ng * c.K + c.n * c.TA;
+    let filled = 0; const a = state.assign[c.kod]; a.K.forEach(x => { if (x) filled++; }); a.A.forEach(x => { if (x) filled++; });
+    const tot = ng + c.n;
+    h += '<div class="meta">' + (c.indep ? '<span class="pill warn">Independent</span>' : '') + '<span class="pill">Tahun ' + c.tahun + '</span><span class="pill num pcount">' + c.pelajar.reduce((x, y) => x + (Number(y) || 0), 0) + ' pelajar</span><span class="pill num">' + hrs + ' jam</span><span class="pill ' + (filled === tot ? 'good' : 'bad') + ' num">' + filled + '/' + tot + ' unit</span></div>';
+  } else { h += '<div class="meta"><span class="pill">Tahun ' + c.tahun + '</span></div>'; }
+  if (c.type === 'jsm') h += '<span class="pill">Diajar oleh pensyarah JSM</span>';
+  else h += '<label>Penyelaras <select data-act="coord" data-c="' + c.kod + '"><option value="">- pilih -</option>' + staf.map(l => '<option value="' + l.id + '"' + (c.coord === l.id ? ' selected' : '') + '>' + esc(l.short) + '</option>').join('') + '</select></label>';
+  h += '</header>';
+  if (c.type === 'dp') {
+    h += '<div class="gridwrap"><p class="muted" style="margin:0">Penyelia: semua pensyarah JTM (penyeliaan tidak dikira dalam jam mengajar). ' + c.pelajar[0] + ' pelajar, satu seksyen.</p></div></section>'; return h;
+  }
+  h += '<div class="gridwrap"><div class="grid" style="--n:' + c.n + '">';
+  h += '<div class="rl">Seksyen</div>'; for (let s = 0; s < c.n; s++) h += '<div class="sec">' + (s + 1) + '</div>';
+  h += '<div class="rl">Pelajar</div>'; for (let s = 0; s < c.n; s++) h += '<div class="stu"><input class="sin num" type="number" min="0" data-act="stu" data-c="' + c.kod + '" data-i="' + s + '" value="' + c.pelajar[s] + '" aria-label="Bilangan pelajar seksyen ' + (s + 1) + ' ' + c.kod + '"></div>';
+  h += '<div class="rl">Kuliah ' + c.K + 'j</div>';
+  if (c.type === 'jsm') { for (let g = 0; g < ng; g++) h += '<div class="cell jsm k" style="grid-column:span ' + c.grp + '">JSM</div>'; h += '<div class="rl">Tutorial</div>'; for (let s = 0; s < c.n; s++) h += '<div class="cell jsm a">JSM</div>'; }
+  else { for (let g = 0; g < ng; g++) h += cellHTML(c, 'K', g); h += '<div class="rl">Amali ' + c.TA + 'j</div>'; for (let s = 0; s < c.n; s++) h += cellHTML(c, 'A', s); }
+  h += '</div></div></section>';
+  return h;
+}
+function kpiHTML() {
+  const m = M, errs = m.issues.filter(i => i.sev === 'bad').length, warns = m.issues.filter(i => i.sev === 'warn').length;
+  const sp = m.total ? [m.staffH / m.total * 100, m.samH / m.total * 100] : [0, 0];
+  return '<div class="kpis">' +
+    '<div class="kpi"><div class="l">Jumlah jam mengajar</div><div class="v num"><span data-k="total" data-count="' + m.total + '">' + m.total + '</span></div><div class="s">jam / minggu · ' + (m.units - m.unfilled) + ' daripada ' + m.units + ' unit diisi</div><div class="split"><i style="width:' + sp[0] + '%;background:var(--accent)"></i><i style="width:' + sp[1] + '%;background:var(--good)"></i></div></div>' +
+    '<div class="kpi"><div class="l">Pensyarah JTM</div><div class="v num"><span data-k="staffH" data-count="' + m.staffH + '">' + m.staffH + '</span></div><div class="s">jam · ' + m.staffN + ' pensyarah · purata ' + fmt(m.staffN ? m.staffH / m.staffN : 0) + '</div></div>' +
+    '<div class="kpi" style="--k:var(--good)"><div class="l">Pensyarah sambilan</div><div class="v num"><span data-k="samN" data-count="' + m.samN + '">' + m.samN + '</span> <span style="font-size:18px;color:var(--muted)">orang</span></div><div class="s">' + m.samH + ' jam · had ' + state.set.sambilanMax + ' jam seorang</div></div>' +
+    '<div class="kpi ' + (m.atTarget === m.staffN ? 'good' : 'warn') + '"><svg class="ring" viewBox="0 0 44 44" aria-hidden="true"><circle class="rb" cx="22" cy="22" r="18"/><circle class="rf" cx="22" cy="22" r="18" style="--p:' + (m.staffN ? m.atTarget / m.staffN : 0) + '"/></svg><div class="l">Cukup sasaran</div><div class="v num"><span data-k="atT" data-count="' + m.atTarget + '">' + m.atTarget + '</span><span style="font-size:18px;color:var(--muted)"> / ' + m.staffN + '</span></div><div class="s">pensyarah JTM tepat pada sasaran jam</div></div>' +
+    '<div class="kpi ' + (errs ? 'bad' : (warns ? 'warn' : 'good')) + '"><div class="l">Semakan peraturan</div><div class="v num"><span data-k="errs" data-count="' + errs + '">' + errs + '</span><span style="font-size:18px;color:var(--muted)"> ralat</span></div><div class="s">' + warns + ' amaran · ' + m.issues.filter(i => i.sev === 'info').length + ' maklumat</div></div></div>';
+}
+
+function addCourseForm() {
+  const staf = state.lecturers.filter(l => l.type === 'staf');
+  const f = (id, t, v, extra) => '<label>' + t + '<input id="' + id + '" value="' + esc(v) + '" ' + (extra || '') + '></label>';
+  return '<details class="course addc"' + (ui.addOpen ? ' open' : '') + ' data-addc="1"><summary class="ch" style="cursor:pointer"><span class="cid">+</span><h3>Tambah kursus (termasuk kursus independent)</h3><span class="muted">kod, seksyen, pelajar, jam</span></summary>' +
+    '<div class="gridwrap"><div class="set">' + f('nc-kod', 'Kod kursus', '') + f('nc-nama', 'Nama kursus', '') +
+    '<label>Jenis<select id="nc-indep"><option value="0">Kursus biasa</option><option value="1" selected>Independent (pelajar ulang kursus)</option></select></label>' +
+    '<label>Tahun<select id="nc-tahun"><option>1</option><option>2</option><option>3</option></select></label>' +
+    f('nc-kredit', 'Kredit', '3', 'type="number" min="0"') + f('nc-n', 'Bilangan seksyen', '1', 'type="number" min="1" max="20"') +
+    f('nc-pel', 'Pelajar setiap seksyen', '10', 'placeholder="satu nombor, atau senarai 12,13,12"') + f('nc-grp', 'Seksyen setiap kumpulan kuliah', '1', 'type="number" min="1"') +
+    f('nc-K', 'Jam kuliah (satu kumpulan)', '2', 'type="number" min="0"') + f('nc-TA', 'Jam amali/tutorial (satu seksyen)', '0', 'type="number" min="0"') +
+    '<label>Penyelaras (pilihan)<select id="nc-coord"><option value="">- belum ditetapkan -</option>' + staf.map(l => '<option value="' + l.id + '">' + esc(l.short) + '</option>').join('') + '</select></label></div>' +
+    '<p style="margin:10px 0 0"><button type="button" class="btn primary" data-act="addCourse">Tambah kursus</button> <span class="muted">Kursus baharu masuk ke bahagian bawah dan jamnya dikira dalam beban pensyarah.</span></p></div></details>';
+}
+function parsePelajar(txt, n) {
+  const a = String(txt).split(/[,;\s]+/).filter(x => x !== '').map(x => Math.max(0, Math.round(Number(x) || 0)));
+  if (!a.length) a.push(0); while (a.length < n) a.push(a[a.length - 1]); return a.slice(0, n);
+}
+function resizeCourse(s, c) {
+  const ng = Math.ceil(c.n / c.grp), a = s.assign[c.kod];
+  while (a.K.length < ng) a.K.push(''); a.K.length = ng; while (a.A.length < c.n) a.A.push(''); a.A.length = c.n;
+  c.pelajar = parsePelajar(c.pelajar.join(','), c.n);
+}
+function kursusHTML() {
+  let h = '<div class="card"><h2>Maklumat kursus</h2><p class="muted" style="margin-top:0">Ubah nama, bilangan seksyen, pelajar dan jam. Bila bilangan seksyen atau saiz kumpulan berubah, agihan seksyen yang lebih dibuang dan yang baharu dibiarkan kosong. Kursus tambahan boleh dibuang.</p><div class="tw"><table class="tbl" style="min-width:980px"><thead><tr><th>Kod</th><th>Nama</th><th>Independent</th><th>Tahun</th><th>Kredit</th><th>Seksyen</th><th>Seksyen / kuliah</th><th>Pelajar setiap seksyen</th><th></th></tr></thead><tbody>';
+  teaching(state).forEach(c => {
+    const i = (f, v, t, w) => '<input data-act="cedit" data-f="' + f + '" data-c="' + c.kod + '" ' + (t || '') + ' value="' + esc(v) + '" style="width:' + (w || 64) + 'px" aria-label="' + f + ' ' + c.kod + '">';
+    h += '<tr><td><b>' + c.kod + '</b></td><td>' + i('nama', c.nama, '', 220) + '</td><td><input type="checkbox" data-act="cedit" data-f="indep" data-c="' + c.kod + '"' + (c.indep ? ' checked' : '') + ' aria-label="Independent ' + c.kod + '"></td><td>' + i('tahun', c.tahun, 'type="number" min="1" max="3"', 56) + '</td><td>' + i('kredit', c.kredit, 'type="number" min="0"', 56) + '</td><td>' + i('n', c.n, 'type="number" min="1" max="20"', 56) + '</td><td>' + i('grp', c.grp, 'type="number" min="1"', 56) + '</td><td>' + i('pelajar', c.pelajar.join(','), '', 190) + '</td><td>' + (c.added ? '<button type="button" class="btn ghost" data-act="delCourse" data-c="' + c.kod + '">Buang</button>' : '') + '</td></tr>';
+  });
+  return h + '</tbody></table></div></div>';
+}
+
+function agihanHTML() {
+  const cards = visibleCourses().map(courseCard).join('') || '<div class="card">Tiada kursus untuk tapisan ini.</div>';
+  const side = '<aside class="side" aria-label="Pensyarah"><div class="sh"><h2>Pensyarah</h2><input class="search" id="q" type="search" placeholder="Cari pensyarah" value="' + esc(ui.q) + '" aria-label="Cari pensyarah">' +
+    '<div class="seg" role="group" aria-label="Tapis"><button type="button" data-act="filter" data-v="all" aria-pressed="' + (ui.filter === 'all') + '">Semua</button><button type="button" data-act="filter" data-v="staf" aria-pressed="' + (ui.filter === 'staf') + '">JTM</button><button type="button" data-act="filter" data-v="sambilan" aria-pressed="' + (ui.filter === 'sambilan') + '">Sambilan</button></div>' +
+    '<div class="seg" role="group" aria-label="Susun"><button type="button" data-act="sort" data-v="nama" aria-pressed="' + (ui.sort === 'nama') + '">Nama</button><button type="button" data-act="sort" data-v="jam" aria-pressed="' + (ui.sort === 'jam') + '">Jam</button><button type="button" data-act="sort" data-v="kurang" aria-pressed="' + (ui.sort === 'kurang') + '">Baki sasaran</button></div>' +
+    '<div class="brushinfo" id="binfo">' + brushInfo() + '</div></div><div class="list" id="lrows">' + rowsHTML() + '</div></aside>';
+  return courseFilterHTML() + '<div class="layout"><div class="courses">' + cards + '</div>' + side + '</div>';
+}
+function bebanHTML() {
+  const m = M, rows = state.lecturers.map(l => {
+    const o = m.per[l.id], co = m.coordOf[l.id] || [];
+    return { l, o, nama: sPlain(l.short), jenis: l.type, kursus: Object.keys(o.courses).join(', '), pen: co.join(', '), kj: o.kh, aj: o.ah, jam: o.hours, tgt: o.target == null ? o.cap : o.target, beza: o.target == null ? o.hours - o.cap : o.hours - o.target };
+  });
+  const f = ui.tsort; rows.sort((a, b) => { const x = a[f], y = b[f]; return (x < y ? -1 : x > y ? 1 : 0) * ui.tdir; });
+  const th = (k, t, n) => '<th class="' + (n ? 'n' : '') + '" data-act="tsort" data-v="' + k + '" aria-sort="' + (ui.tsort === k ? (ui.tdir > 0 ? 'ascending' : 'descending') : 'none') + '">' + t + (ui.tsort === k ? (ui.tdir > 0 ? ' ▲' : ' ▼') : '') + '</th>';
+  let h = '<div class="card"><h2>Beban setiap pensyarah</h2><div class="legend"><span style="--c:var(--accent)">Jam kuliah</span><span style="--c:var(--accent2)">Jam amali / tutorial</span><span style="--c:var(--ink)">Garis = sasaran (atau had sambilan)</span></div><div class="tw"><table class="tbl"><thead><tr>' +
+    th('nama', 'Pensyarah') + th('jenis', 'Jenis') + th('kursus', 'Kursus') + th('pen', 'Penyelaras') + th('kj', 'Kuliah', 1) + th('aj', 'Amali', 1) + th('jam', 'Jumlah', 1) + th('tgt', 'Sasaran', 1) + th('beza', 'Beza', 1) + '<th>Graf</th></tr></thead><tbody>';
+  const scale = 16;
+  rows.forEach(r => {
+    const bz = r.beza, cls = r.l.type === 'staf' ? (bz === 0 ? 'good' : bz > 0 ? 'bad' : 'warn') : (bz > 0 ? 'bad' : '');
+    h += '<tr class="' + (r.jenis === 'staf' ? '' : 'sam') + '"><td><b>' + esc(r.nama) + '</b></td><td>' + (r.jenis === 'staf' ? '<span class="tag tetap">Tetap</span>' : '<span class="tag sambtag">SAMBILAN</span>') + '</td><td>' + esc(r.kursus || '-') + '</td><td>' + esc(r.pen || '') + '</td><td class="n num">' + r.kj + '</td><td class="n num">' + r.aj + '</td><td class="n num"><b>' + r.jam + '</b></td><td class="n num">' + r.tgt + '</td><td class="n num"><span class="pill ' + cls + '">' + (bz > 0 ? '+' : '') + bz + '</span></td>' +
+      '<td><div class="cbar"><i class="kk" style="width:' + r.kj / scale * 100 + '%"></i><i class="aa" style="width:' + r.aj / scale * 100 + '%"></i><u style="left:' + Math.min(100, r.tgt / scale * 100) + '%"></u></div></td></tr>';
+  });
+  h += '<tr><td colspan="4"><b>Jumlah</b></td><td class="n num"><b>' + rows.reduce((a, r) => a + r.kj, 0) + '</b></td><td class="n num"><b>' + rows.reduce((a, r) => a + r.aj, 0) + '</b></td><td class="n num"><b>' + m.total + '</b></td><td colspan="3"></td></tr></tbody></table></div></div>';
+  h += '<div class="card"><h2>Ringkasan setiap kursus</h2><div class="tw"><table class="tbl"><thead><tr><th>Kursus</th><th class="n">Jam kursus</th><th>Penyelaras</th><th>Pensyarah dan jam</th></tr></thead><tbody>';
+  teaching(state).forEach(c => {
+    const ng = ngOf(c), hrs = ng * c.K + c.n * c.TA, by = {};
+    const a = state.assign[c.kod]; a.K.forEach(id => { if (id) by[id] = (by[id] || 0) + c.K; }); a.A.forEach(id => { if (id) by[id] = (by[id] || 0) + c.TA; });
+    const who = Object.keys(by).map(id => esc(m.L[id].short) + ' <b class="num">' + by[id] + '</b>').join(' · ');
+    h += '<tr><td><b>' + c.kod + '</b> ' + esc(c.nama) + '</td><td class="n num">' + hrs + '</td><td>' + esc(c.coord && m.L[c.coord] ? m.L[c.coord].short : '-') + '</td><td>' + who + '</td></tr>';
+  });
+  return h + '</tbody></table></div></div>';
+}
+function semakanHTML() {
+  const m = M; let h = '<div class="card"><h2>Semakan peraturan</h2>';
+  if (!m.issues.length) h += '<div class="issue ok"><span class="ic">✓</span><div>Semua peraturan dipatuhi.</div></div>';
+  const lab = { bad: 'Ralat', warn: 'Amaran', info: 'Maklumat' }, ic = { bad: '!', warn: '!', info: 'i' };
+  m.issues.forEach((i, n) => { h += '<div class="issue ' + i.sev + '"><span class="ic">' + ic[i.sev] + '</span><div><b>' + lab[i.sev] + '</b> · ' + esc(i.msg) + '</div><button type="button" class="btn go" data-act="goto" data-n="' + n + '">Pergi</button></div>'; });
+  return h + '</div>';
+}
+function tetapanHTML() {
+  const s = state.set;
+  const num = (k, t) => '<label>' + t + '<input type="number" min="0" step="1" data-act="set" data-k="' + k + '" value="' + s[k] + '"></label>';
+  let h = '<div class="card"><h2>Peraturan</h2><div class="set">' + num('target', 'Sasaran jam, bukan penyelaras') + num('coordTarget', 'Sasaran jam, penyelaras') + num('staffCourses', 'Maksimum kursus, pensyarah JTM') + num('sambilanCourses', 'Maksimum kursus, sambilan') + num('sambilanMax', 'Had jam, sambilan') + num('kuliahMin', 'Kumpulan kuliah, minimum') + num('kuliahMax', 'Kumpulan kuliah, maksimum') + '</div></div>';
+  h += '<div class="card"><h2>Sasaran dan catatan pensyarah</h2><p class="muted" style="margin-top:0">Kosongkan sasaran untuk guna peraturan (penyelaras 8, lain 10). Isi nombor untuk menetapkan sendiri, contohnya Mazniha 4 dan Rosfuzah 6.</p><div class="tw"><table class="tbl"><thead><tr><th>Pensyarah</th><th>Sasaran tetap</th><th>Sasaran semasa</th><th>Penyelaras Sem 1</th><th>Disasar untuk independent</th><th>Catatan</th><th></th></tr></thead><tbody>';
+  state.lecturers.forEach(l => {
+    const o = M.per[l.id];
+    h += '<tr><td>' + (l.type === 'sambilan' ? '<input data-act="lname" data-l="' + l.id + '" value="' + esc(l.name) + '" aria-label="Nama sambilan">' : '<b>' + esc(l.name) + '</b>') + '</td>' +
+      '<td>' + (l.type === 'staf' ? '<input type="number" min="0" data-act="ltarget" data-l="' + l.id + '" value="' + (l.target == null ? '' : l.target) + '" placeholder="auto" aria-label="Sasaran tetap ' + esc(l.short) + '">' : '<span class="muted">had ' + s.sambilanMax + '</span>') + '</td>' +
+      '<td class="num">' + (o.target == null ? '-' : o.target) + '</td><td>' + (l.type === 'staf' ? '<input type="checkbox" data-act="lflag" data-f="sem1" data-l="' + l.id + '"' + (l.sem1 ? ' checked' : '') + ' aria-label="Penyelaras Sem 1 ' + esc(l.short) + '">' : '') + '</td>' +
+      '<td>' + (l.type === 'staf' ? '<input type="checkbox" data-act="lflag" data-f="indep" data-l="' + l.id + '"' + (l.indep ? ' checked' : '') + ' aria-label="Independent ' + esc(l.short) + '">' : '') + '</td>' +
+      '<td><input data-act="lnote" data-l="' + l.id + '" value="' + esc(l.note) + '" aria-label="Catatan ' + esc(l.short) + '"></td>' +
+      '<td>' + (l.type === 'sambilan' ? '<button type="button" class="btn ghost" data-act="deleteSam" data-l="' + l.id + '">Buang</button>' : '') + '</td></tr>';
+  });
+  h += '</tbody></table></div><p><button type="button" class="btn" data-act="addSam">+ Tambah sambilan</button></p></div>';
+  h += '<div class="card"><h2>Larangan sekursus</h2><p class="muted" style="margin-top:0">Dua pensyarah dalam senarai ini tidak boleh berada dalam kursus yang sama.</p><div class="pairs">' +
+    state.pairs.map((p, i) => '<span class="pill">' + esc(M.L[p[0]].short) + ' ✕ ' + esc(M.L[p[1]].short) + '<button type="button" data-act="delPair" data-i="' + i + '" aria-label="Buang larangan">×</button></span>').join('') + '</div>';
+  const opts = state.lecturers.map(l => '<option value="' + l.id + '">' + esc(l.short) + '</option>').join('');
+  h += '<div class="set" style="max-width:560px"><label>Pensyarah pertama<select id="pa">' + opts + '</select></label><label>Pensyarah kedua<select id="pb">' + opts + '</select></label></div><p><button type="button" class="btn" data-act="addPair">+ Tambah larangan</button></p></div>';
+  h += '<div class="card"><h2>Jam kursus</h2><p class="muted" style="margin-top:0">Jam seminggu bagi satu kumpulan kuliah dan satu seksyen amali atau tutorial. Nilai ini andaian daripada corak Sem 1; ubah di sini jika dokumen kursus berbeza.</p><div class="tw"><table class="tbl"><thead><tr><th>Kursus</th><th>Kuliah (jam)</th><th>Amali/tutorial (jam)</th></tr></thead><tbody>' +
+    teaching(state).map(c => '<tr><td><b>' + c.kod + '</b> ' + esc(c.nama) + '</td><td><input type="number" min="0" data-act="chours" data-f="K" data-c="' + c.kod + '" value="' + c.K + '"></td><td><input type="number" min="0" data-act="chours" data-f="TA" data-c="' + c.kod + '" value="' + c.TA + '"></td></tr>').join('') + '</tbody></table></div></div>';
+  return h;
+}
+
+/* ---------- tenaga pengajar (Lampiran 3.1.3.a) ---------- */
+const SBY = {}; STAFF.forEach(x => { SBY[x.id] = x; });
+const sInit = n => { const w = n.replace(/^((Ts|Dr|Inv|Cik|Pn|En)\.?\s+)+/i, '').replace(/\s+(a\/p|a\/l|bin|binti)\s+/i, ' ').split(/\s+/); return ((w[0] || '?')[0] + (w[1] ? w[1][0] : '')).toUpperCase(); };
+const sTitle = n => { const m = n.match(/^((?:Ts|Dr|Inv|Cik|Pn|En)\.?\s+)+/i); return m ? m[0].trim() : ''; };
+const sPlain = n => n.replace(/^((Ts|Dr|Inv|Cik|Pn|En)\.?\s+)+/i, '');
+const isPhd = x => x.kelayakan.some(k => !/calon/i.test(k.q) && /doktor falsafah|ph\.?d/i.test(k.q));
+const stType = x => /sambilan|part/i.test(x.status) ? 'sambilan' : (/contract|kontrak/i.test(x.status) ? 'kontrak' : 'tetap');
+const stLabel = { tetap: 'Tetap', kontrak: 'Kontrak', sambilan: 'Sambilan' };
+const sHue = id => (HU && HU[id] != null) ? HU[id] : 230;
+function staffMatch(x) {
+  const f = ui.tf, o = M.per[x.id];
+  if ((f === 'tetap' || f === 'kontrak' || f === 'sambilan') && stType(x) !== f) return false;
+  if (f === 'phd' && !isPhd(x)) return false;
+  if (f === 'sem2' && !(o && o.hours > 0)) return false;
+  const q = ui.tq.trim().toLowerCase(); if (!q) return true;
+  const blob = [x.nama, x.status, x.kursus.map(k => k.kod + ' ' + k.nama).join(' '), x.kelayakan.map(k => k.q + ' ' + k.inst).join(' '), x.penyelidikan.join(' '), (x.mengajar || []).join(' '), x.pengalaman.map(e => e.jawatan + ' ' + e.majikan).join(' ')].join(' ').toLowerCase();
+  return q.split(/\s+/).every(w => blob.indexOf(w) >= 0);
+}
+function staffListHTML() {
+  const list = STAFF.filter(staffMatch);
+  if (!list.length) return '<div class="tempty">Tiada pensyarah sepadan dengan carian ini.</div>';
+  return list.map(x => {
+    const o = M.per[x.id], away = !o;
+    const hrs = away ? '<span class="tchip away">Cuti</span>' : '<span class="num th">' + o.hours + ' j</span>';
+    return '<button type="button" class="trow' + (ui.tsel === x.id ? ' sel' : '') + '" data-act="tpick" data-id="' + x.id + '" aria-pressed="' + (ui.tsel === x.id) + '" style="--h:' + sHue(x.id) + '">' +
+      '<span class="tav">' + esc(sInit(x.nama)) + '</span><span class="tnm"><b>' + esc(sPlain(x.nama)) + '</b><small>' + (sTitle(x.nama) ? esc(sTitle(x.nama)) + ' · ' : '') + stLabel[stType(x)] + '</small></span>' + hrs + '</button>';
+  }).join('');
+}
+function staffDetailHTML() {
+  const x = SBY[ui.tsel]; if (!x) return '<div class="card tempty">Pilih seorang pensyarah di sebelah kiri.</div>';
+  const L = M.L[x.id], o = M.per[x.id], co = (M.coordOf[x.id] || []);
+  let h = '<div class="tdhead" style="--h:' + sHue(x.id) + '"><span class="tav big">' + esc(sInit(x.nama)) + '</span><div class="tdname"><h2>' + esc(x.nama) + '</h2><div class="tchips">' +
+    (stType(x) === 'sambilan' ? '<span class="tag sambtag">SAMBILAN</span>' : '<span class="tag tetap">' + (stType(x) === 'kontrak' ? 'Kontrak' : 'Tetap (Full-time)') + '</span>') + (isPhd(x) ? '<span class="tchip">Doktor Falsafah</span>' : '') +
+    (L && L.sem1 ? '<span class="tchip">Penyelaras Sem 1</span>' : '') + (co.length ? '<span class="tchip pen">Penyelaras Sem 2: ' + esc(co.join(', ')) + '</span>' : '') +
+    (!o ? '<span class="tchip away">Tiada dalam agihan Sem 2</span>' : '') + '</div>' +
+    (x.ringkas ? '<p class="tnote">' + esc(x.ringkas) + '</p>' : '') + (L && L.note ? '<p class="tnote">Catatan: ' + esc(L.note) + '</p>' : '') + (x.sumber ? '<p class="tnote">Sumber maklumat: ' + esc(x.sumber) + '</p>' : '') + '</div>' + (x.no ? '<span class="tno">No. ' + x.no + '</span>' : '') + '</div>';
+  if (!o) h += '<div class="issue info"><span class="ic">i</span><div>Cuti bersalin. Tidak termasuk dalam agihan Semester 2 dan tidak dikira dalam jumlah jam.</div></div>';
+  if (x.semak) h += '<div class="issue warn"><span class="ic">!</span><div>Jadual pengalaman kerja dalam lampiran asal tidak sejajar bagi pensyarah ini. Sila semak dokumen asal sebelum merujuknya.</div></div>';
+  if (o) {
+    h += '<div class="card"><h3>Agihan Semester 2</h3><div class="tload"><div><b class="num big2">' + o.hours + '</b> jam<small>Kuliah ' + o.kh + ' · Amali ' + o.ah + '</small></div><div class="tbarw">' + barHTML(o) +
+      '<small>' + (o.target == null ? 'Had sambilan ' + o.cap + ' jam' : 'Sasaran ' + o.target + ' jam') + '</small></div></div>';
+    const ks = Object.keys(o.courses);
+    h += ks.length ? '<div class="tcl">' + ks.map(k => { const c = M.C[k], cc = o.courses[k], hr = cc.k * c.K + cc.a * c.TA;
+      return '<div class="tc"><b>' + k + '</b><span>' + esc(c.nama) + '</span><em>' + (cc.k ? 'Kuliah ' + cc.k + ' kump.' : '') + (cc.k && cc.a ? ' · ' : '') + (cc.a ? 'Amali ' + cc.a + ' seks.' : '') + ' · ' + hr + ' jam</em>' +
+        (co.indexOf(k) >= 0 ? '<i class="tchip pen">Penyelaras</i>' : '') + '</div>'; }).join('') + '</div>' : '<p class="muted">Belum diagihkan sebarang seksyen.</p>';
+    h += '</div>';
+  }
+  h += '<div class="two2"><div class="card"><h3>Kelayakan akademik</h3><ul class="tul">' + x.kelayakan.map(k => '<li><b>' + esc(k.q) + '</b>' + (k.inst ? '<small>' + esc(k.inst) + '</small>' : '') + '</li>').join('') + '</ul></div>' +
+    '<div class="card"><h3>Fokus penyelidikan</h3><div class="tchips">' + (x.penyelidikan.length ? x.penyelidikan.map(r => '<span class="tchip res">' + esc(r) + '</span>').join('') : '<span class="muted">Tiada maklumat</span>') + '</div></div></div>';
+  h += '<div class="card"><h3>Pengalaman kerja</h3><ol class="tl">' + x.pengalaman.map(e => '<li><span class="ty">' + esc(e.tahun || '-') + '</span><div><b>' + esc(e.jawatan) + '</b><small>' + esc(e.majikan) + '</small></div></li>').join('') + '</ol></div>';
+  if (x.mengajar && x.mengajar.length) h += '<div class="card"><h3>Bidang yang boleh diajar</h3><div class="tchips">' + x.mengajar.map(r => '<span class="tchip res">' + esc(r) + '</span>').join('') + '</div></div>';
+  return h;
+}
+function tenagaHTML() {
+  if (!SBY[ui.tsel]) ui.tsel = STAFF[0].id;
+  const nT = STAFF.filter(x => stType(x) === 'tetap').length, nK = STAFF.filter(x => stType(x) === 'kontrak').length, nS = STAFF.filter(x => stType(x) === 'sambilan').length, nP = STAFF.filter(isPhd).length;
+  const sam = state.lecturers.filter(l => l.type === 'sambilan' && !SBY[l.id]);
+  const chip = (v, t) => '<button type="button" data-act="tfilter" data-v="' + v + '" aria-pressed="' + (ui.tf === v) + '">' + t + '</button>';
+  return '<div class="tsum"><span class="pill num"><b>' + STAFF.length + '</b> pensyarah</span><span class="pill num"><b>' + nT + '</b> tetap</span><span class="pill num"><b>' + nK + '</b> kontrak</span><span class="pill num"><b>' + nS + '</b> sambilan</span><span class="pill num"><b>' + nP + '</b> Doktor Falsafah</span></div>' +
+    '<div class="tlayout"><aside class="tside"><input class="search" id="tq" type="search" placeholder="Cari nama, kursus, kelayakan, penyelidikan" value="' + esc(ui.tq) + '" aria-label="Cari tenaga pengajar">' +
+    '<div class="seg" role="group" aria-label="Tapis">' + chip('all', 'Semua') + chip('tetap', 'Tetap') + chip('kontrak', 'Kontrak') + chip('sambilan', 'Sambilan') + chip('phd', 'PhD') + chip('sem2', 'Mengajar Sem 2') + '</div>' +
+    '<div class="tlist" id="tlist">' + staffListHTML() + '</div>' +
+    (sam.length ? '<p class="muted tsamnote"><span class="tag sambtag">SAMBILAN</span> ' + sam.map(l => esc(l.short)).join(', ') + ' belum ada maklumat tenaga pengajar. Maklumat akan ditambah apabila CV diterima.</p>' : '') + '</aside>' +
+    '<section class="tdetail" id="tdetail" aria-live="polite">' + staffDetailHTML() + '</section></div>';
+}
+const PAGES = {
+  ringkasan: { t: 'Ringkasan', d: 'Gambaran jam mengajar dan perkara yang perlu diberi perhatian', i: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>' },
+  agihan: { t: 'Agihan seksyen', d: 'Tetapkan pensyarah bagi kuliah dan amali setiap seksyen', i: '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M8 14h3M13 14h3M8 18h3"/>' },
+  kursus: { t: 'Kursus', d: 'Tambah kursus, termasuk independent, dan ubah maklumat kursus', i: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M9 8h6"/>' },
+  beban: { t: 'Beban jam', d: 'Jam kuliah dan amali setiap pensyarah berbanding sasaran', i: '<path d="M5 20V10M12 20V4M19 20v-7"/>' },
+  tenaga: { t: 'Tenaga pengajar', d: 'Rujuk kelayakan, penyelidikan dan pengalaman pensyarah', i: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17.5 14c2.6 0 4 1.8 4 4.5"/>' },
+  semakan: { t: 'Semakan', d: 'Ralat, amaran dan maklumat mengikut peraturan', i: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>' },
+  tetapan: { t: 'Tetapan', d: 'Sasaran jam, sambilan, larangan sekursus dan jam kursus', i: '<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>' }
+};
+const TABS = Object.keys(PAGES);
+function tabFromHash() { let h = ''; try { h = (location.hash || '').slice(1); } catch (e) { } return TABS.indexOf(h) >= 0 ? h : 'ringkasan'; }
+function go(t) { ui.enter = true; ui.tab = t; closePop(); try { if (location.hash !== '#' + t) location.hash = t; } catch (e) { } render(); window.scrollTo(0, 0); }
+function visibleCourses() { const f = ui.cfilter; return state.courses.filter(c => f === 'ALL' || (f === 'T1' && c.tahun === 1) || (f === 'T2' && c.tahun >= 2) || f === c.kod); }
+function courseFilterHTML() {
+  const f = ui.cfilter, chip = (v, t) => '<button type="button" data-act="cfilter" data-v="' + v + '" aria-pressed="' + (f === v) + '">' + esc(t) + '</button>';
+  return '<div class="cfbar"><div class="seg" role="group" aria-label="Tapis kursus">' + chip('T1', 'Tahun 1') + chip('T2', 'Tahun 2') + chip('ALL', 'Semua') +
+    '</div><label class="cpick">Atau satu kursus <select data-act="cselect"><option value="">Pilih kursus</option>' + teaching(state).map(c => '<option value="' + c.kod + '"' + (f === c.kod ? ' selected' : '') + '>' + c.kod + ' ' + esc(c.nama) + '</option>').join('') + '</select></label><button type="button" class="btn" data-act="tab" data-v="kursus">+ Tambah kursus</button></div><div class="legend2"><span><i class="lg tetapi"></i>Staf tetap JTM</span><span><i class="lg samb"></i>Pensyarah sambilan (corak jalur dan lencana S)</span><span><i class="lg exc"></i>Di luar lampiran kepakaran</span></div>';
+}
+function courseSummaryHTML() { const full = bebanHTML(); return full.slice(full.indexOf('<div class="card"><h2>Ringkasan setiap kursus')); }
+function ringkasanHTML() {
+  const m = M, top = m.issues.filter(i => i.sev !== 'info').slice(0, 6);
+  let h = kpiHTML() + '<div class="two"><div class="card"><h2>Perlu perhatian</h2>';
+  h += top.length ? top.map(i => '<div class="issue ' + i.sev + '"><span class="ic">!</span><div>' + esc(i.msg) + '</div><button type="button" class="btn go" data-act="goto" data-n="' + m.issues.indexOf(i) + '">Pergi</button></div>').join('') : '<div class="issue ok"><span class="ic">✓</span><div>Tiada ralat atau amaran.</div></div>';
+  h += '<p class="muted" style="margin:8px 0 0">' + m.issues.filter(i => i.sev === 'info').length + ' maklumat lagi di menu Semakan.</p></div>';
+  const rows = state.lecturers.slice().sort((a, b) => m.per[b.id].hours - m.per[a.id].hours);
+  h += '<div class="card"><h2>Jam setiap pensyarah</h2>' + rows.map(l => { const o = m.per[l.id]; return '<div class="hrow' + (l.type === 'sambilan' ? ' sam' : '') + '" data-l="' + l.id + '"><span class="hn">' + esc(l.short) + (l.type === 'sambilan' ? ' <span class="tag sambtag">S</span>' : '') + '</span>' + barHTML(o) + '<span class="hv num ' + (o.status === 'plain' ? '' : o.status) + '"><b>' + o.hours + '</b>' + (o.target != null ? ' / ' + o.target : ' / ' + o.cap) + '</span></div>'; }).join('') + '</div></div>';
+  return h + courseSummaryHTML();
+}
+function kursusPageHTML() { return addCourseForm() + kursusHTML(); }
+function navHTML() {
+  const e = M.issues.filter(i => i.sev === 'bad').length, w = M.issues.filter(i => i.sev === 'warn').length;
+  const item = k => '<button type="button" class="ni" data-act="tab" data-v="' + k + '" aria-current="' + (ui.tab === k ? 'page' : 'false') + '"><svg viewBox="0 0 24 24" aria-hidden="true">' + PAGES[k].i + '</svg><span>' + PAGES[k].t + '</span>' + (k === 'semakan' ? (e ? '<span class="badge bad">' + e + '</span>' : (w ? '<span class="badge warn">' + w + '</span>' : '')) : '') + '</button>';
+  return '<nav class="nav" aria-label="Menu utama"><div class="nbrand"><b>Agihan Kursus DAT</b><small>Sem 2 · 2026 / 2027</small></div><div class="nind" aria-hidden="true"></div>' + TABS.map(item).join('') + '<div class="nfoot">' + (isDirty() ? 'Perubahan belum disimpan' : 'Semua perubahan tersimpan') + (SHEET ? '<br>Google Sheet · versi ' + sheetRev + (sheetInfo && sheetInfo.by ? '<br>Terakhir: ' + esc(sheetInfo.by) : '') + (sheetUser ? '<br>Anda: ' + esc(sheetUser) : '') : '') + '</div></nav>';
+}
+function barInner() {
+  const dirty = isDirty(), m = M, P = PAGES[ui.tab], errs = m.issues.filter(i => i.sev === 'bad').length;
+  const st = ui.saving ? '<span class="chip-state">Menyimpan…</span>' : (dirty ? '<span class="chip-state dirty">Belum disimpan</span>' : '<span class="chip-state ok">Tersimpan</span>');
+  return '<header class="pbar"><div class="bt"><h1>' + P.t + '</h1><p>' + P.d + '</p></div>' +
+    '<div class="mini"><span class="pill num"><b>' + m.total + '</b> jam</span><span class="pill num"><b>' + m.samN + '</b> sambilan</span><span class="pill num ' + (errs ? 'bad' : 'good') + '"><b>' + errs + '</b> ralat</span></div>' +
+    '<div class="actions">' + st +
+    '<button class="btn" type="button" data-act="undo" ' + (hist.length ? '' : 'disabled') + ' title="Buat asal (Ctrl+Z)">↶ Buat asal</button><button class="btn" type="button" data-act="redo" ' + (fut.length ? '' : 'disabled') + ' title="Ulang (Ctrl+Y)">↷ Ulang</button>' +
+    '<details class="menu"><summary class="btn">Eksport ▾</summary><div class="pop" style="position:absolute;right:0;margin-top:6px;width:230px"><button type="button" data-act="xlsx">Muat turun Excel (.xlsx)</button><button type="button" data-act="csv">Muat turun CSV</button><button type="button" data-act="json">Muat turun JSON (salinan agihan)</button><button type="button" data-act="copy">Salin jadual (tampal ke Excel)</button></div></details>' +
+    '<label class="btn" style="cursor:pointer">Import JSON<input type="file" id="imp" accept=".json,application/json" hidden></label>' +
+    '<button class="btn" type="button" data-act="reset" title="Kembali kepada agihan asal fail ini">Asal</button>' +
+    '<button class="btn primary" type="button" data-act="save" ' + (dirty && !ui.saving && ui.canSave ? '' : 'disabled') + '>' + (STANDALONE ? 'Simpan fail' : 'Simpan') + '</button></div></header>' +
+    (ui.conflict ? '<div class="banner warnb"><span>Versi lebih baharu (v' + esc(ui.conflict.rev) + ') sudah disimpan oleh <b>' + esc(ui.conflict.by || 'pengguna lain') + '</b>' + (ui.conflict.at ? ' pada ' + esc(ui.conflict.at) : '') + '. Perubahan anda belum disimpan.</span><button class="btn" type="button" data-act="cfLoad">Muat versi terkini (buang perubahan saya)</button><button class="btn ghost" type="button" data-act="cfForce">Simpan juga (timpa)</button><button class="btn ghost" type="button" data-act="cfClose">Tutup</button></div>' : '') +
+    (draftOffer ? '<div class="banner"><span>Ada draf yang belum disimpan daripada sesi lepas.</span><button class="btn" type="button" data-act="draftYes">Pulihkan draf</button><button class="btn ghost" type="button" data-act="draftNo">Buang draf</button></div>' : '');
+}
+function bannerHTML() {
+  let px = ''; for (let i = 0; i < 40; i++) px += '<i style="--i:' + i + '"></i>';
+  return '<div class="bbanner intro"><div class="logo ppd" role="img" aria-label="Universiti Tun Hussein Onn Malaysia, Pusat Pengajian Diploma"></div>' +
+    '<div class="btext"><b>Diploma Teknologi Maklumat (DAT)</b><span>Agihan Kursus · Jabatan Teknologi Maklumat · Semester 2, Sesi 2026 / 2027</span></div>' +
+    '<div class="logo jtm" role="img" aria-label="Jabatan Teknologi Maklumat"></div><div class="pxs" aria-hidden="true">' + px + '</div></div>';
+}
+function bindImport() { const imp = document.getElementById('imp'); if (imp) imp.addEventListener('change', importFile); }
+function render() {
+  if (ui.denied) { root.innerHTML = '<div class="loadingscreen"><b>Akses ditolak</b><span class="muted" style="max-width:420px;text-align:center">Dashboard ini hanya untuk staf UTHM. Log masuk dengan e-mel staf (@uthm.edu.my) pada pelayar ini, kemudian muat semula halaman.' + (sheetUser ? ' Anda log masuk sebagai ' + esc(sheetUser) + '.' : '') + '</span></div>'; return; }
+  if (ui.loading) { root.innerHTML = '<div class="loadingscreen"><div class="spin"></div><b>Memuatkan data daripada Google Sheet…</b></div>'; return; }
+  const barsBefore = snapBars();
+  HU = hues(state); M = compute(state);
+  const sy = window.scrollY, side = document.getElementById('lrows'), ss = side ? side.scrollTop : 0;
+  const pages = { ringkasan: ringkasanHTML, agihan: agihanHTML, kursus: kursusPageHTML, beban: bebanHTML, tenaga: tenagaHTML, semakan: semakanHTML, tetapan: tetapanHTML };
+  let bn = root.querySelector('.bbanner'); if (!bn) { const t = document.createElement('div'); t.innerHTML = bannerHTML(); bn = t.firstElementChild; }
+  root.innerHTML = '<div class="shell">' + navHTML() + '<main class="main"><div id="bannerslot"></div><div id="barwrap">' + barInner() + '</div><div id="body">' + pages[ui.tab]() + '</div></main></div>';
+  document.getElementById('bannerslot').replaceWith(bn);
+  bindImport(); window.scrollTo(0, sy); const s2 = document.getElementById('lrows'); if (s2) s2.scrollTop = ss;
+  const wasEnter = ui.enter; ui.enter = false;
+  if (wasEnter) { document.getElementById('body').classList.add('enter'); setTimeout(() => { const b2 = document.getElementById('body'); if (b2) b2.classList.remove('enter'); }, 1300); }
+  animateNumbers(wasEnter);
+  if (!wasEnter) applyBars(barsBefore);
+  placeNav(); applyPulse(); checkCelebrate();
+  document.body.classList.toggle('painting', ui.brush !== null);
+}
+function renderLight() { /* kemas kini menu, kepala dan bar pensyarah tanpa membina semula kad kursus */
+  const barsBefore = snapBars();
+  HU = hues(state); M = compute(state);
+  const bw = document.getElementById('barwrap'), nv = root.querySelector('.nav'); if (!bw || !nv) return render();
+  bw.innerHTML = barInner(); nv.outerHTML = navHTML(); bindImport(); placeNav();
+  const rows = document.getElementById('lrows'); if (rows) { const sc = rows.scrollTop; rows.innerHTML = rowsHTML(); rows.scrollTop = sc; }
+  const bi = document.getElementById('binfo'); if (bi) bi.innerHTML = brushInfo();
+  document.body.classList.toggle('painting', ui.brush !== null);
+  applyBars(barsBefore); checkCelebrate();
+  document.querySelectorAll('.course').forEach(el => { const c = M.C[el.dataset.c]; if (!c || c.type !== 'teach') return; const pills = el.querySelectorAll('.meta .pill'); const a = state.assign[c.kod]; let f = 0; a.K.forEach(x => { if (x) f++; }); a.A.forEach(x => { if (x) f++; }); const tot = ngOf(c) + c.n; const pu = pills[pills.length - 1]; if (pu) { pu.className = 'pill num ' + (f === tot ? 'good' : 'bad'); pu.textContent = f + '/' + tot + ' unit'; } });
+}
+
+/* ---------- tindakan ---------- */
+function setCell(kod, kind, i, id) {
+  const a = state.assign[kod]; if (kind === 'K') a.K[i] = id; else a.A[i] = id;
+}
+function applyBrush(cell) {
+  if (!cell || !cell.dataset.cell) return false;
+  const id = ui.brush === '__erase' ? '' : ui.brush; const kod = cell.dataset.c, kind = cell.dataset.kind, i = Number(cell.dataset.i);
+  const a = state.assign[kod]; const cur = kind === 'K' ? a.K[i] : a.A[i]; if ((cur || '') === id) return false;
+  setCell(kod, kind, i, id);
+  const c = M.C[kod], p = cellParts(c, kind, i); cell.className = p.cls; cell.setAttribute('style', p.style); cell.dataset.l = p.id; cell.innerHTML = p.inner; cell.setAttribute('draggable', p.id ? 'true' : 'false'); popEl(cell);
+  return true;
+}
+function openPop(cell) {
+  closePop(); const kod = cell.dataset.c, kind = cell.dataset.kind, i = Number(cell.dataset.i);
+  const c = M.C[kod], a = state.assign[kod], curId = kind === 'K' ? a.K[i] : a.A[i];
+  const mk = l => { const o = M.per[l.id]; const ex = l.type === 'staf' && l.lampiran.indexOf(kod) < 0; return '<button type="button" data-act="pick" data-l="' + l.id + '"><span class="dot" style="--h:' + HU[l.id] + '"></span><span>' + esc(l.short) + (l.type === 'sambilan' ? ' <span class="tag sambtag">S</span>' : '') + (ex ? ' <span class="x" title="Di luar lampiran">!</span>' : '') + (curId === l.id ? ' ✓' : '') + '</span><span class="sub num">' + o.hours + (o.target != null ? ' / ' + o.target : ' / ' + o.cap) + ' j</span></button>'; };
+  const staf = state.lecturers.filter(l => l.type === 'staf'), sam = state.lecturers.filter(l => l.type === 'sambilan');
+  const exp = staf.filter(l => l.lampiran.indexOf(kod) >= 0), oth = staf.filter(l => l.lampiran.indexOf(kod) < 0);
+  const pop = document.createElement('div'); pop.className = 'pop'; pop.id = 'pop'; pop.dataset.c = kod; pop.dataset.kind = kind; pop.dataset.i = i;
+  pop.innerHTML = '<h4>' + (kind === 'K' ? 'Kuliah kumpulan ' : 'Amali seksyen ') + (i + 1) + ' · ' + kod + '</h4><button type="button" data-act="pick" data-l=""><span class="dot era"></span><span>Kosongkan</span></button>' +
+    '<h4>Dalam lampiran kepakaran</h4>' + exp.map(mk).join('') + '<h4>Pensyarah JTM lain</h4>' + oth.map(mk).join('') + '<h4>Sambilan</h4>' + sam.map(mk).join('');
+  pop.addEventListener('click', e => {
+    const b = e.target.closest('[data-act="pick"]'); if (!b) return; e.stopPropagation();
+    const kd = pop.dataset.c, kn = pop.dataset.kind, ix = Number(pop.dataset.i), pid = b.dataset.l; closePop();
+    commit(st => { if (kn === 'K') st.assign[kd].K[ix] = pid; else st.assign[kd].A[ix] = pid; }); ui.pulse = [{ kod: kd, kind: kn, i: ix }]; render();
+  });
+  document.body.appendChild(pop);
+  const r = cell.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
+  let x = Math.min(Math.max(8, r.left), window.innerWidth - pw - 8), y = r.bottom + 6; if (y + ph > window.innerHeight - 8) y = Math.max(8, r.top - ph - 6);
+  pop.style.left = x + 'px'; pop.style.top = y + 'px'; ui.pop = true;
+}
+function closePop() { const p = document.getElementById('pop'); if (p) p.remove(); ui.pop = false; }
+function gotoIssue(n) {
+  const is = M.issues[n]; if (!is) return;
+  let kod = is.c; if (!kod && is.l) { const o = M.per[is.l]; kod = Object.keys(o.courses)[0]; }
+  if (kod) ui.cfilter = kod; else ui.cfilter = 'ALL'; ui.tab = 'agihan'; try { location.hash = 'agihan'; } catch (e) { } render();
+  const el = kod && document.getElementById('c-' + kod); if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1500); }
+}
+function buildRows() {
+  const L = M.L, name = id => (id && L[id] ? L[id].name : '');
+  const pen = [['Tahun', 'Kod', 'Kursus', 'Jenis', 'Kredit', 'Seksyen', 'Pelajar', 'Penyelaras', 'Pensyarah kuliah', 'Pensyarah amali / tutorial']];
+  state.courses.forEach(c => {
+    const a = state.assign[c.kod];
+    for (let s = 0; s < c.n; s++) {
+      let kul, am;
+      if (c.type === 'jsm') { kul = 'JSM'; am = 'JSM'; } else if (c.type === 'dp') { kul = 'Tidak berkenaan'; am = 'Semua pensyarah JTM (penyelia)'; }
+      else { kul = name(a.K[Math.floor(s / c.grp)]); am = name(a.A[s]); }
+      pen.push(['Tahun ' + c.tahun + ' DAT', c.kod, c.nama, c.indep ? 'Independent' : (c.type === 'jsm' ? 'JSM' : 'Biasa'), c.kredit, s + 1, c.pelajar[s], c.type === 'jsm' ? 'JSM' : name(c.coord), kul, am]);
+    }
+  });
+  const beb = [['Pensyarah', 'Jenis', 'Kursus', 'Penyelaras', 'Jam kuliah', 'Jam amali / tutorial', 'Jumlah jam', 'Sasaran / had', 'Beza']];
+  state.lecturers.forEach(l => { const o = M.per[l.id], co = M.coordOf[l.id] || [], t = o.target == null ? o.cap : o.target; beb.push([l.name, l.type === 'staf' ? 'JTM' : 'Sambilan', Object.keys(o.courses).join(', '), co.join(', '), o.kh, o.ah, o.hours, t, o.hours - t]); });
+  return { pen, beb };
+}
+function webDownload(filename, data) {
+  const type = /\.csv$/i.test(filename) ? 'text/csv;charset=utf-8' : (/\.xlsx$/i.test(filename) ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' : (/\.json$/i.test(filename) ? 'application/json' : (/\.html?$/i.test(filename) ? 'text/html;charset=utf-8' : 'application/octet-stream')));
+  const url = URL.createObjectURL(new Blob([data], { type })), a = document.createElement('a');
+  a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+async function dlSave(filename, data) {
+  try {
+    if (typeof claude === 'undefined' || !claude.use) { webDownload(filename, data); toast('Fail dimuat turun: ' + filename); return; }
+    const d = await claude.use('downloads'); if (!d) { webDownload(filename, data); toast('Fail dimuat turun: ' + filename); return; }
+    await d.save({ filename, data }); toast('Fail dihantar untuk disimpan: ' + filename);
+  } catch (e) {
+    if (e && e.code === 'declined') return;
+    try { webDownload(filename, data); toast('Fail dimuat turun: ' + filename); } catch (e2) { toast('Muat turun gagal. Cuba "Salin jadual".'); }
+  }
+}
+function csvOf(rows) { return '﻿' + rows.map(r => r.map(v => { const s = String(v == null ? '' : v); return /[",\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(',')).join('\r\n'); }
+/* ---------- penulis .xlsx ringkas (tanpa pustaka luar) ---------- */
+const CRC_T = (() => { const t = []; for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(b) { let c = -1; for (let i = 0; i < b.length; i++) c = CRC_T[(c ^ b[i]) & 255] ^ (c >>> 8); return (c ^ -1) >>> 0; }
+function zipStore(files) {
+  const enc = new TextEncoder(), parts = [], cen = []; let off = 0;
+  files.forEach(f => {
+    const nm = enc.encode(f.name), data = enc.encode(f.text), crc = crc32(data), sz = data.length;
+    const lh = new DataView(new ArrayBuffer(30)); lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(12, 0x21, true); lh.setUint32(14, crc, true); lh.setUint32(18, sz, true); lh.setUint32(22, sz, true); lh.setUint16(26, nm.length, true);
+    parts.push(new Uint8Array(lh.buffer), nm, data);
+    const ch = new DataView(new ArrayBuffer(46)); ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(14, 0x21, true); ch.setUint32(16, crc, true); ch.setUint32(20, sz, true); ch.setUint32(24, sz, true); ch.setUint16(28, nm.length, true); ch.setUint32(42, off, true);
+    cen.push(new Uint8Array(ch.buffer), nm); off += 30 + nm.length + sz;
+  });
+  const cl = cen.reduce((a, x) => a + x.length, 0), end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true); end.setUint32(12, cl, true); end.setUint32(16, off, true);
+  const all = parts.concat(cen, [new Uint8Array(end.buffer)]), out = new Uint8Array(all.reduce((a, x) => a + x.length, 0)); let p = 0; all.forEach(x => { out.set(x, p); p += x.length; }); return out;
+}
+const xmlEsc = v => String(v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function colName(i) { let s = ''; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; }
+function sheetXml(rows, widths) {
+  let x = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>' +
+    widths.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols><sheetData>';
+  rows.forEach((r, ri) => {
+    x += '<row r="' + (ri + 1) + '">';
+    r.forEach((v, ci) => {
+      const ref = colName(ci) + (ri + 1), st = ri === 0 ? ' s="1"' : '';
+      if (typeof v === 'number' && isFinite(v)) x += '<c r="' + ref + '"' + (ri === 0 ? st : ' s="2"') + '><v>' + v + '</v></c>';
+      else if (v !== '' && v != null) x += '<c r="' + ref + '"' + st + ' t="inlineStr"><is><t xml:space="preserve">' + xmlEsc(v) + '</t></is></c>';
+    });
+    x += '</row>';
+  });
+  return x + '</sheetData><pageMargins left="0.4" right="0.4" top="0.5" bottom="0.5" header="0.3" footer="0.3"/><pageSetup paperSize="9" orientation="landscape" fitToWidth="1" fitToHeight="0"/></worksheet>';
+}
+function buildXlsx(sheets) {
+  const H = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>', RN = 'http://schemas.openxmlformats.org/package/2006/relationships', OD = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  const f = [
+    { name: '[Content_Types].xml', text: H + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' + sheets.map((_, i) => '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('') + '</Types>' },
+    { name: '_rels/.rels', text: H + '<Relationships xmlns="' + RN + '"><Relationship Id="rId1" Type="' + OD + '/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+    { name: 'xl/workbook.xml', text: H + '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="' + OD + '"><sheets>' + sheets.map((s, i) => '<sheet name="' + xmlEsc(s.name) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>').join('') + '</sheets></workbook>' },
+    { name: 'xl/_rels/workbook.xml.rels', text: H + '<Relationships xmlns="' + RN + '">' + sheets.map((_, i) => '<Relationship Id="rId' + (i + 1) + '" Type="' + OD + '/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>').join('') + '<Relationship Id="rId' + (sheets.length + 1) + '" Type="' + OD + '/styles" Target="styles.xml"/></Relationships>' },
+    { name: 'xl/styles.xml', text: H + '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF2E3192"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment horizontal="center"/></xf></cellXfs></styleSheet>' }
+  ].concat(sheets.map((s, i) => ({ name: 'xl/worksheets/sheet' + (i + 1) + '.xml', text: sheetXml(s.rows, s.widths) })));
+  return zipStore(f);
+}
+async function exportXlsx() {
+  const r = buildRows();
+  const bytes = buildXlsx([{ name: 'Penawaran', rows: r.pen, widths: [13, 11, 36, 13, 8, 9, 9, 42, 44, 44] }, { name: 'Beban', rows: r.beb, widths: [42, 11, 32, 24, 11, 19, 12, 13, 8] }]);
+  await dlSave('Agihan_DAT_Sem2_2026-2027.xlsx', bytes);
+}
+async function copyTable() {
+  const r = buildRows(), t = r.pen.concat([[]], r.beb).map(x => x.join('\t')).join('\n');
+  try { await navigator.clipboard.writeText(t); toast('Jadual disalin. Tampal ke Excel atau Google Sheets.'); } catch (e) { toast('Penyalinan ditolak oleh pelayar. Guna muat turun.'); }
+}
+function applyRemote(r) {
+  let s2; try { s2 = JSON.parse(r.json); } catch (e) { return false; }
+  if (!s2 || !Array.isArray(s2.courses) || !Array.isArray(s2.lecturers) || !s2.assign) return false;
+  state = s2; savedStr = JSON.stringify(state); sheetRev = r.rev; sheetInfo = { by: r.by, at: r.at }; hist.length = 0; fut.length = 0; ui.conflict = null; draftOffer = null;
+  try { localStorage.removeItem(DRAFT_KEY); } catch (e) { }
+  return true;
+}
+async function sheetLoad() {
+  try {
+    const r = await gs('getState'); sheetUser = r.user || '';
+    if (r.denied) { ui.denied = true; ui.loading = false; render(); return; } ui.canSave = r.canEdit !== false;
+    if (r.empty) { sheetRev = 0; sheetInfo = null; }
+    else if (!applyRemote(r)) toast('Data dalam Google Sheet tidak sah. Data asal digunakan.');
+    if (!ui.canSave) toast('Anda hanya boleh melihat. Anda tiada kebenaran menyimpan.');
+  } catch (e) { toast('Tidak dapat memuatkan data daripada Google Sheet. Cuba muat semula halaman.'); }
+  ui.loading = false; render();
+}
+async function sheetCheck() {
+  if (!SHEET || ui.saving || ui.loading) return;
+  try {
+    const m = await gs('getMeta');
+    if (m && m.rev > sheetRev) {
+      if (!isDirty()) { await sheetLoad(); toast('Dikemas kini oleh ' + (m.by || 'pengguna lain') + '. Versi terkini dimuatkan.'); }
+      else { ui.conflict = m; renderLight(); }
+    }
+  } catch (e) { }
+}
+async function save() {
+  if (ui.saving || !isDirty()) return; ui.saving = true; renderLight();
+  try {
+    if (SHEET) {
+      const force = ui.force; ui.force = false;
+      const r = await gs('saveState', JSON.stringify(state), force ? -1 : sheetRev);
+      if (r && r.ok) { sheetRev = r.rev; sheetInfo = { by: r.by, at: r.at }; savedStr = JSON.stringify(state); ui.conflict = null; persistDraft(); ui.saving = false; render(); toast('Disimpan ke Google Sheet (versi ' + r.rev + ').'); return; }
+      ui.saving = false;
+      if (r && r.conflict) { ui.conflict = r; renderLight(); toast('Ada versi yang lebih baharu. Pilih tindakan di bahagian atas.'); return; }
+      toast((r && r.error) || 'Simpan gagal. Cuba lagi.'); renderLight(); return;
+    }
+    if (STANDALONE) {
+      webDownload('index.html', buildDoc(state)); savedStr = JSON.stringify(state); hist.length = 0; fut.length = 0; persistDraft(); ui.saving = false;
+      render(); toast('index.html baharu dimuat turun. Gantikan fail lama di GitHub (Add file > Upload files, atau commit) untuk kekalkan perubahan.'); return;
+    }
+    if (typeof claude === 'undefined' || !claude.use) throw { code: 'not_granted' };
+    const art = await claude.use('artifact'); if (!art) throw { code: 'not_granted' };
+    await art.publish(buildDoc(state));
+  } catch (e) {
+    ui.saving = false;
+    if (e && e.code === 'conflict') { toast('Versi lebih baharu wujud; halaman dimuat semula.'); return; }
+    if (e && (e.code === 'not_writer' || e.code === 'not_granted' || e.code === 'capability_disabled' || e.code === 'not_declared')) { ui.canSave = false; toast('Penyimpanan tidak tersedia untuk paparan ini. Guna Eksport JSON untuk simpan salinan.'); }
+    else toast('Simpan gagal. Cuba lagi atau guna Eksport JSON.');
+    renderLight();
+  }
+}
+function buildDoc(st) {
+  const css = document.getElementById('app-css').textContent, app = document.getElementById('app').textContent;
+  const data = JSON.stringify(st).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+  return '<!DOCTYPE html>\n<html lang="ms">\n<head>\n' + HEAD_HTML + '\n<style id="app-css">' + css + '</style>\n</head>\n<body>\n<div id="root"></div>\n<script type="application/json" id="state-data">' + data + '<\/script>\n<script id="app">' + app + '<\/script>\n</body>\n</html>';
+}
+function importFile(ev) {
+  const f = ev.target.files && ev.target.files[0]; if (!f) return; const rd = new FileReader();
+  rd.onload = () => { try { const o = JSON.parse(rd.result); if (!o || o.v !== 1 || !o.courses || !o.assign || !o.lecturers) throw 0; commit(s => { Object.keys(s).forEach(k => delete s[k]); Object.assign(s, o); }); render(); toast('Agihan diimport. Tekan Simpan untuk kekalkan.'); } catch (e) { toast('Fail JSON tidak sah untuk paparan ini.'); } };
+  rd.readAsText(f);
+}
+
+/* ---------- peristiwa ---------- */
+root.addEventListener('click', ev => {
+  const t = ev.target.closest('[data-act],[data-cell]'); if (!t) { if (ui.pop && !ev.target.closest('#pop')) closePop(); return; }
+  const act = t.dataset.act;
+  if (!act && t.dataset.cell) { if (ui.brush === null) { openPop(t); } return; }
+  const v = t.dataset.v, d = t.dataset;
+  if (act === 'tab') { go(v); }
+  else if (act === 'tpick') { ui.tsel = d.id; const tl = document.getElementById('tlist'), td = document.getElementById('tdetail'); if (tl && td) { tl.innerHTML = staffListHTML(); td.innerHTML = staffDetailHTML(); td.classList.remove('swap'); void td.offsetWidth; td.classList.add('swap'); if (window.matchMedia('(max-width:1050px)').matches) td.scrollIntoView({ behavior: 'smooth', block: 'start' }); } else render(); }
+  else if (act === 'tfilter') { ui.tf = v; const tl = document.getElementById('tlist'); if (tl) { tl.innerHTML = staffListHTML(); document.querySelectorAll('[data-act="tfilter"]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v))); } else render(); }
+  else if (act === 'cfLoad') { sheetLoad(); }
+  else if (act === 'cfForce') { ui.force = true; ui.conflict = null; save(); }
+  else if (act === 'cfClose') { ui.conflict = null; renderLight(); }
+  else if (act === 'cfilter') { ui.cfilter = v; ui.enter = true; render(); }
+  else if (act === 'brush') { ui.brush = ui.brush === d.l ? null : d.l; closePop(); renderLight(); }
+  else if (act === 'filter') { ui.filter = v; render(); }
+  else if (act === 'sort') { ui.sort = v; render(); }
+  else if (act === 'tsort') { if (ui.tsort === v) ui.tdir *= -1; else { ui.tsort = v; ui.tdir = (v === 'nama' || v === 'jenis' || v === 'kursus' || v === 'pen') ? 1 : -1; } render(); }
+  else if (act === 'undo') undo(); else if (act === 'redo') redo();
+  else if (act === 'save') save();
+  else if (act === 'xlsx') { exportXlsx(); } else if (act === 'csv') { dlSave('Agihan_DAT_Sem2_penawaran.csv', csvOf(buildRows().pen)); }
+  else if (act === 'json') { dlSave('agihan-dat-sem2.json', JSON.stringify(state, null, 1)); } else if (act === 'copy') copyTable();
+  else if (act === 'reset') { if (!isDirty() && JSON.stringify(state) === JSON.stringify(DEFAULTS)) return; commit(s => { Object.keys(s).forEach(k => delete s[k]); Object.assign(s, clone(DEFAULTS)); }); render(); toast('Dikembalikan kepada agihan asal.'); }
+  else if (act === 'cpk') { ev.stopPropagation(); const kod = d.c, g = Number(d.i), c = M.C[kod], id = state.assign[kod].K[g]; if (!id) return; commit(s => { for (let k = g * c.grp; k < Math.min(c.n, (g + 1) * c.grp); k++) s.assign[kod].A[k] = id; }); ui.pulse = [{ kod, kind: 'K', i: g }]; for (let k = g * c.grp; k < Math.min(c.n, (g + 1) * c.grp); k++) ui.pulse.push({ kod, kind: 'A', i: k }); render(); }
+  else if (act === 'goto') gotoIssue(Number(d.n));
+  else if (act === 'addCourse') {
+    const g = id => document.getElementById(id).value.trim(), kod = g('nc-kod').toUpperCase(), nama = g('nc-nama');
+    if (!kod || !nama) { toast('Isi kod dan nama kursus.'); return; }
+    if (state.courses.some(c => c.kod === kod)) { toast('Kod ' + kod + ' sudah ada.'); return; }
+    const n = Math.min(20, Math.max(1, Math.round(Number(g('nc-n')) || 1))), grp = Math.min(n, Math.max(1, Math.round(Number(g('nc-grp')) || 1)));
+    const c = { kod, nama, tahun: Number(g('nc-tahun')), kredit: Number(g('nc-kredit')) || 0, n, grp, pelajar: parsePelajar(g('nc-pel'), n), K: Math.max(0, Number(g('nc-K')) || 0), TA: Math.max(0, Number(g('nc-TA')) || 0), type: 'teach', indep: g('nc-indep') === '1', added: true, coord: g('nc-coord') };
+    commit(s => { s.courses.push(c); s.assign[kod] = { K: Array(Math.ceil(n / grp)).fill(''), A: Array(n).fill('') }; });
+    ui.cfilter = kod; ui.tab = 'agihan'; try { location.hash = 'agihan'; } catch (e) { } render(); const el = document.getElementById('c-' + kod); if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1500); } toast('Kursus ' + kod + ' ditambah. Pilih pensyarah: klik namanya di bar kanan kemudian klik sel, atau klik sel terus.');
+  }
+  else if (act === 'delCourse') { commit(s => { s.courses = s.courses.filter(c => c.kod !== d.c); delete s.assign[d.c]; }); render(); toast('Kursus ' + d.c + ' dibuang.'); }
+  else if (act === 'addSam') { commit(s => { const n = s.lecturers.filter(l => l.type === 'sambilan').length + 1; let nm = 'JTM Sambilan ' + n; while (s.lecturers.some(l => l.name === nm)) nm += '*'; s.lecturers.push({ id: 's' + Date.now().toString(36), name: nm, short: nm.replace('JTM ', ''), type: 'sambilan', lampiran: [], sem1: false, target: null, indep: false, note: '' }); }); render(); }
+  else if (act === 'deleteSam') { const o = M.per[d.l]; if (o && o.hours > 0) { toast('Kosongkan semua tugasan pensyarah ini dahulu.'); return; } commit(s => { s.lecturers = s.lecturers.filter(l => l.id !== d.l); s.pairs = s.pairs.filter(p => p[0] !== d.l && p[1] !== d.l); }); render(); }
+  else if (act === 'addPair') { const a = document.getElementById('pa').value, b = document.getElementById('pb').value; if (a === b) { toast('Pilih dua pensyarah berbeza.'); return; } commit(s => { if (!s.pairs.some(p => (p[0] === a && p[1] === b) || (p[0] === b && p[1] === a))) s.pairs.push([a, b]); }); render(); }
+  else if (act === 'delPair') { commit(s => { s.pairs.splice(Number(d.i), 1); }); render(); }
+  else if (act === 'draftYes') { const dr = draftOffer; draftOffer = null; commit(s => { Object.keys(s).forEach(k => delete s[k]); Object.assign(s, dr); }); render(); }
+  else if (act === 'draftNo') { draftOffer = null; try { localStorage.removeItem(DRAFT_KEY); } catch (e) { } render(); }
+});
+root.addEventListener('change', ev => {
+  const t = ev.target, act = t.dataset.act; if (!act) return; const d = t.dataset;
+  if (act === 'cselect') { if (t.value) { ui.cfilter = t.value; ui.enter = true; render(); } }
+  else if (act === 'coord') { commit(s => { cmap(s)[d.c].coord = t.value; }); render(); }
+  else if (act === 'set') { commit(s => { s.set[d.k] = Math.max(0, Number(t.value) || 0); }); render(); }
+  else if (act === 'ltarget') { commit(s => { lmapOf(s)[d.l].target = t.value === '' ? null : Math.max(0, Number(t.value)); }); render(); }
+  else if (act === 'lflag') { commit(s => { lmapOf(s)[d.l][d.f] = t.checked; }); render(); }
+  else if (act === 'lnote') { commit(s => { lmapOf(s)[d.l].note = t.value; }); render(); }
+  else if (act === 'lname') { commit(s => { const l = lmapOf(s)[d.l]; l.name = t.value || l.name; l.short = l.name.replace('JTM ', ''); }); render(); }
+  else if (act === 'cedit') {
+    commit(s => {
+      const c = cmap(s)[d.f === undefined ? '' : d.c]; if (!c) return; const f = d.f;
+      if (f === 'nama') c.nama = t.value || c.nama;
+      else if (f === 'indep') c.indep = t.checked;
+      else if (f === 'tahun') c.tahun = Math.min(3, Math.max(1, Number(t.value) || 1));
+      else if (f === 'kredit') c.kredit = Math.max(0, Number(t.value) || 0);
+      else if (f === 'n') { c.n = Math.min(20, Math.max(1, Math.round(Number(t.value) || 1))); if (c.grp > c.n) c.grp = c.n; resizeCourse(s, c); }
+      else if (f === 'grp') { c.grp = Math.min(c.n, Math.max(1, Math.round(Number(t.value) || 1))); resizeCourse(s, c); }
+      else if (f === 'pelajar') c.pelajar = parsePelajar(t.value, c.n);
+    }); render();
+  }
+  else if (act === 'stu') {
+    commit(s => { cmap(s)[d.c].pelajar[Number(d.i)] = Math.max(0, Math.round(Number(t.value) || 0)); }); persistDraft();
+    const c = cmap(state)[d.c], pc = document.querySelector('#c-' + d.c + ' .pcount'); if (pc) pc.textContent = c.pelajar.reduce((x, y) => x + (Number(y) || 0), 0) + ' pelajar';
+    const bw = document.getElementById('barwrap'); if (bw) { bw.innerHTML = barInner(); bindImport(); } const nv = root.querySelector('.nav'); if (nv) nv.outerHTML = navHTML();
+  }
+  else if (act === 'chours') { commit(s => { cmap(s)[d.c][d.f] = Math.max(0, Number(t.value) || 0); }); render(); }
+});
+root.addEventListener('toggle', ev => { const t = ev.target; if (t && t.dataset && t.dataset.addc) ui.addOpen = t.open; }, true);
+root.addEventListener('input', ev => { if (ev.target.id === 'tq') { ui.tq = ev.target.value; const tl = document.getElementById('tlist'); if (tl) tl.innerHTML = staffListHTML(); return; } if (ev.target.id === 'q') { ui.q = ev.target.value; const rows = document.getElementById('lrows'); if (rows) rows.innerHTML = rowsHTML(); } });
+root.addEventListener('pointerdown', ev => {
+  const cell = ev.target.closest('[data-cell]'); if (!cell || ui.brush === null || ev.target.closest('[data-act]') || ev.button > 0) return;
+  ev.preventDefault(); ui.painting = true; hist.push(JSON.stringify(state)); if (hist.length > 150) hist.shift(); fut.length = 0; applyBrush(cell);
+});
+root.addEventListener('pointerover', ev => { if (!ui.painting) return; const cell = ev.target.closest('[data-cell]'); if (cell) applyBrush(cell); });
+document.addEventListener('pointerup', () => { if (!ui.painting) return; ui.painting = false; persistDraft(); render(); });
+root.addEventListener('mouseover', ev => {
+  if (ui.painting) return; const r = ev.target.closest('[data-h]'), c = ev.target.closest('[data-cell]');
+  if (r) spotlight(r.dataset.h); else if (c && c.dataset.l) spotlight(c.dataset.l);
+});
+root.addEventListener('mouseout', ev => { if (ev.target.closest('[data-h]') || ev.target.closest('[data-cell]')) spotlight(null); });
+/* seret dan lepas: pensyarah ke sel, atau sel ke sel (tukar ganti) */
+root.addEventListener('dragstart', ev => {
+  if (ui.brush !== null) { ev.preventDefault(); return; }
+  const lr = ev.target.closest && ev.target.closest('.lrow[data-h]'), ce = ev.target.closest && ev.target.closest('[data-cell]');
+  if (lr) { ev.dataTransfer.setData('text/plain', 'L:' + lr.dataset.h); ev.dataTransfer.effectAllowed = 'copy'; document.body.classList.add('dragging'); spotlight(null); }
+  else if (ce && ce.dataset.l) { ev.dataTransfer.setData('text/plain', 'C:' + ce.dataset.c + ':' + ce.dataset.kind + ':' + ce.dataset.i); ev.dataTransfer.effectAllowed = 'move'; document.body.classList.add('dragging'); ce.classList.add('dragsrc'); spotlight(null); }
+});
+root.addEventListener('dragover', ev => { const ce = ev.target.closest && ev.target.closest('[data-cell]'); if (!ce) return; ev.preventDefault(); document.querySelectorAll('.cell.dropok').forEach(x => { if (x !== ce) x.classList.remove('dropok'); }); ce.classList.add('dropok'); });
+root.addEventListener('dragleave', ev => { const ce = ev.target.closest && ev.target.closest('[data-cell]'); if (ce && !ce.contains(ev.relatedTarget)) ce.classList.remove('dropok'); });
+root.addEventListener('dragend', () => { document.body.classList.remove('dragging'); document.querySelectorAll('.dropok,.dragsrc').forEach(x => x.classList.remove('dropok', 'dragsrc')); });
+root.addEventListener('drop', ev => {
+  const ce = ev.target.closest && ev.target.closest('[data-cell]'); if (!ce) return; ev.preventDefault();
+  const data = (ev.dataTransfer.getData('text/plain') || '').split(':'); document.body.classList.remove('dragging');
+  const tk = ce.dataset.c, tkind = ce.dataset.kind, ti = Number(ce.dataset.i), get = (k, kind, i) => (kind === 'K' ? state.assign[k].K[i] : state.assign[k].A[i]) || '', put = (st, k, kind, i, v) => { if (kind === 'K') st.assign[k].K[i] = v; else st.assign[k].A[i] = v; };
+  if (data[0] === 'L') { const id = data[1]; commit(st => put(st, tk, tkind, ti, id)); ui.pulse = [{ kod: tk, kind: tkind, i: ti }]; render(); }
+  else if (data[0] === 'C') {
+    const sk = data[1], skind = data[2], si = Number(data[3]); if (sk === tk && skind === tkind && si === ti) { render(); return; }
+    const a = get(sk, skind, si), b = get(tk, tkind, ti); commit(st => { put(st, sk, skind, si, b); put(st, tk, tkind, ti, a); }); ui.pulse = [{ kod: sk, kind: skind, i: si }, { kod: tk, kind: tkind, i: ti }]; render(); toast('Sel ditukar ganti.');
+  }
+});
+/* riak pada butang */
+root.addEventListener('pointerdown', ev => {
+  if (calm()) return; const t = ev.target.closest('.btn,.ni,.lrow,.seg button'); if (!t) return;
+  const r = t.getBoundingClientRect(), d = Math.max(r.width, r.height) * 1.7, sp = document.createElement('span'); sp.className = 'rip';
+  sp.style.cssText = 'width:' + d + 'px;height:' + d + 'px;left:' + (ev.clientX - r.left - d / 2) + 'px;top:' + (ev.clientY - r.top - d / 2) + 'px'; t.appendChild(sp); setTimeout(() => sp.remove(), 700);
+});
+/* cahaya latar, parallax banner, condong kad KPI */
+let fxRaf = 0;
+document.addEventListener('pointermove', ev => {
+  if (calm() || fxRaf || ui.painting) return; const tgt = ev.target;
+  fxRaf = requestAnimationFrame(() => {
+    fxRaf = 0; const bg = document.querySelector('.bgfx'); if (bg) { bg.style.setProperty('--sx', ev.clientX + 'px'); bg.style.setProperty('--sy', ev.clientY + 'px'); }
+    const bn = document.querySelector('.bbanner'); if (bn) { const r = bn.getBoundingClientRect(); const x = (ev.clientX - (r.left + r.width / 2)) / r.width, y = (ev.clientY - (r.top + r.height / 2)) / Math.max(r.height, 220); bn.style.setProperty('--mx', Math.max(-1, Math.min(1, x * 2)).toFixed(3)); bn.style.setProperty('--my', Math.max(-1, Math.min(1, y * 2)).toFixed(3)); }
+    const k = tgt && tgt.closest ? tgt.closest('.kpi') : null;
+    document.querySelectorAll('.kpi.tilt').forEach(e => { if (e !== k) { e.classList.remove('tilt'); e.style.setProperty('--rx', '0deg'); e.style.setProperty('--ry', '0deg'); } });
+    if (k) { const r = k.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width - .5, y = (ev.clientY - r.top) / r.height - .5; k.style.setProperty('--rx', (-y * 9).toFixed(2) + 'deg'); k.style.setProperty('--ry', (x * 11).toFixed(2) + 'deg'); k.style.setProperty('--gx', ((x + .5) * 100).toFixed(1) + '%'); k.style.setProperty('--gy', ((y + .5) * 100).toFixed(1) + '%'); k.classList.add('tilt'); }
+  });
+});
+document.addEventListener('keydown', ev => {
+  if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.classList && ev.target.classList.contains('lrow') && ev.target.tagName === 'DIV') { ev.preventDefault(); ev.target.click(); return; }
+  if (ev.key === 'Escape') { if (ui.pop) closePop(); else if (ui.brush !== null) { ui.brush = null; renderLight(); } }
+  const tag = (ev.target.tagName || '').toLowerCase(); if (tag === 'input' || tag === 'select') return;
+  if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 'z') { ev.preventDefault(); undo(); }
+  if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 'y') { ev.preventDefault(); redo(); }
+  if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.dataset && ev.target.dataset.cell && ui.brush === null) { ev.preventDefault(); openPop(ev.target); }
+});
+document.addEventListener('click', ev => { if (ui.pop && !ev.target.closest('#pop') && !ev.target.closest('[data-cell]')) closePop(); });
+window.addEventListener('resize', () => { if (ui.pop) closePop(); });
+window.addEventListener('hashchange', () => { const t = tabFromHash(); if (t !== ui.tab) { ui.enter = true; ui.tab = t; closePop(); render(); window.scrollTo(0, 0); } });
+ui.tab = tabFromHash();
+function calm() { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+function popEl(el) { if (calm() || !el) return; el.classList.remove('cpop'); void el.offsetWidth; el.classList.add('cpop'); setTimeout(() => el.classList.remove('cpop'), 700); }
+function applyPulse() { const p = ui.pulse; ui.pulse = null; if (!p) return; p.forEach(x => { const el = document.querySelector('.cell[data-cell][data-c="' + x.kod + '"][data-kind="' + x.kind + '"][data-i="' + x.i + '"]'); popEl(el); }); }
+function spotlight(id) {
+  document.querySelectorAll('.cell[data-cell]').forEach(c => { const on = !!id && c.dataset.l === id; c.classList.toggle('dim', !!id && !on); c.classList.toggle('hl', on); });
+  document.querySelectorAll('.lrow[data-h]').forEach(r => r.classList.toggle('lit', !!id && r.dataset.h === id));
+}
+function snapBars() { const m = {}; document.querySelectorAll('[data-l] .bar i').forEach(i => { const h = i.closest('[data-l]'); m[h.dataset.l + (h.classList.contains('hrow') ? 'r' : 's')] = i.style.width; }); return m; }
+function applyBars(m) {
+  document.querySelectorAll('[data-l] .bar i').forEach(i => {
+    const h = i.closest('[data-l]'), key = h.dataset.l + (h.classList.contains('hrow') ? 'r' : 's'), old = m[key], nw = i.style.width;
+    if (old !== undefined && old !== nw) { i.style.transition = 'none'; i.style.width = old; void i.offsetWidth; i.style.transition = ''; requestAnimationFrame(() => { i.style.width = nw; }); }
+  });
+}
+function placeNav() {
+  const nav = root.querySelector('.nav'); if (!nav) return; const ind = nav.querySelector('.nind'), act = nav.querySelector('.ni[aria-current="page"]'); if (!ind || !act) return;
+  const y = act.offsetTop, h = act.offsetHeight;
+  if (ui.navY !== undefined && ui.navY !== y && !calm()) { ind.style.transition = 'none'; ind.style.height = h + 'px'; ind.style.transform = 'translateY(' + ui.navY + 'px)'; void ind.offsetWidth; ind.style.transition = ''; requestAnimationFrame(() => { ind.style.transform = 'translateY(' + y + 'px)'; }); }
+  else { ind.style.height = h + 'px'; ind.style.transform = 'translateY(' + y + 'px)'; }
+  ui.navY = y;
+}
+function confetti(n) {
+  if (calm()) return; n = n || 150; const cv = document.createElement('canvas'); cv.className = 'confetti'; cv.width = window.innerWidth; cv.height = window.innerHeight; document.body.appendChild(cv);
+  const ctx = cv.getContext('2d'), cols = ['#2e3192', '#4a4fc4', '#ee3124', '#f58220', '#fbb040', '#14935f'], ps = [];
+  for (let i = 0; i < n; i++) ps.push({ x: cv.width / 2 + (Math.random() - .5) * 240, y: cv.height * .38, vx: (Math.random() - .5) * 15, vy: -Math.random() * 14 - 4, s: Math.random() * 8 + 5, r: Math.random() * 6, vr: (Math.random() - .5) * .45, c: cols[i % cols.length] });
+  const t0 = performance.now();
+  (function f(t) { const el = t - t0; ctx.clearRect(0, 0, cv.width, cv.height); ps.forEach(p => { p.vy += .36; p.vx *= .995; p.x += p.vx; p.y += p.vy; p.r += p.vr; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.globalAlpha = Math.max(0, 1 - el / 2800); ctx.fillRect(-p.s / 2, -p.s / 3, p.s, p.s * .6); ctx.restore(); }); if (el < 2800) requestAnimationFrame(f); else cv.remove(); })(t0);
+}
+function checkCelebrate() {
+  const all = M.staffN > 0 && M.atTarget === M.staffN, filled = M.unfilled === 0;
+  if (ui.cel) { if (all && !ui.cel.all) { confetti(170); toast('Semua pensyarah JTM tepat pada sasaran jam.'); } else if (filled && !ui.cel.filled) { confetti(90); toast('Semua seksyen sudah ada pensyarah.'); } }
+  ui.cel = { all, filled };
+}
+(function () { if (!document.querySelector('.bgfx')) document.body.insertAdjacentHTML('afterbegin', '<div class="bgfx" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>'); const bg = document.querySelector('.bgfx'); if (!bg || calm() || bg.querySelector('.pt')) return; const cols = ['#2e3192', '#4a4fc4', '#ee3124', '#f58220', '#fbb040']; let h = '<i class="spot"></i>'; for (let i = 0; i < 26; i++) { const sz = 6 + Math.round(Math.random() * 12); h += '<b class="pt" style="left:' + (Math.random() * 100).toFixed(1) + '%;--s:' + sz + 'px;--c:' + cols[i % 5] + ';--d:' + (18 + Math.random() * 22).toFixed(1) + 's;--dl:-' + (Math.random() * 30).toFixed(1) + 's"></b>'; } bg.insertAdjacentHTML('beforeend', h); })();
+function animateNumbers(first) {
+  const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const to = Number(el.dataset.count), k = el.dataset.k, from = first ? 0 : (ui.prev[k] !== undefined ? ui.prev[k] : to); ui.prev[k] = to;
+    if (calm || from === to) { el.textContent = to; return; }
+    const t0 = performance.now(), d = 800;
+    (function step(t) { const p = Math.min(1, (t - t0) / d), e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(from + (to - from) * e); if (p < 1 && el.isConnected) requestAnimationFrame(step); else el.textContent = to; })(t0);
+  });
+}
+if (!document.querySelector('.bgfx')) document.body.insertAdjacentHTML('afterbegin', '<div class="bgfx" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>');
+window.__agihan = { confetti, spotlight, get state() { return state; }, compute: () => compute(state), reset: () => { state = clone(DEFAULTS); render(); } };
+if (SHEET) { ui.loading = true; render(); sheetLoad(); document.addEventListener('visibilitychange', () => { if (!document.hidden) sheetCheck(); }); setInterval(sheetCheck, 90000); } else render();
+})();
+</script>
+</body>
+</html>
